@@ -22,6 +22,7 @@ import {
 } from '../types/index';
 import BaseContract from './base-contract';
 import { ChainName } from '../types/index';
+import { THRESHOLD_2_3 } from 'common/utils';
 
 
 export default class ArweaveContract extends BaseContract {
@@ -49,8 +50,8 @@ export default class ArweaveContract extends BaseContract {
     }
   }
 
-  private async initializeUserKey(): Promise<void> {
-    this.userKey = await this.generateKey();
+  private async initializeUserKey(param_obj: any = THRESHOLD_2_3): Promise<void> {
+    this.userKey = await this.generateKey(param_obj);
   }
 
   /**

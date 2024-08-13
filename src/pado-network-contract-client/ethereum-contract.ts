@@ -17,6 +17,7 @@ import {
 import BaseContract from './base-contract';
 import { ethers } from 'ethers';
 import { arseedingBase64ToHexStr, arseedingHexStrToBase64 } from '../common/str-util';
+import { THRESHOLD_2_3 } from 'common/utils';
 
 
 export default class EthereumContract extends BaseContract {
@@ -45,8 +46,8 @@ export default class EthereumContract extends BaseContract {
     }
   }
 
-  private async initializeUserKey(): Promise<void> {
-    this.userKey = await this.generateKey();
+  private async initializeUserKey(param_obj: any = THRESHOLD_2_3): Promise<void> {
+    this.userKey = await this.generateKey(param_obj);
   }
 
   /**
