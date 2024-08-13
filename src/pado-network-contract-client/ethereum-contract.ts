@@ -185,8 +185,12 @@ export default class EthereumContract extends BaseContract {
   }
 
 
+  /**
+   * @param taskId - The ID of the task to retrieve the result for.
+   * @param timeout - The maximum timeout, in milliseconds, defaults to 10000.
+   */
   async getTaskResult(taskId: string, timeout: number = 10000): Promise<Uint8Array> {
-    const task = await this.task.getCompletedTaskById(taskId);
+    const task = await this.task._getCompletedTaskByIdPromise(taskId,timeout);
 
     let dataFromContract = await this.data.getDataById(task.dataId);
     const itemIdForArSeeding = arseedingHexStrToBase64(dataFromContract.dataContent);
