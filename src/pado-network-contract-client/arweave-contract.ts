@@ -22,7 +22,7 @@ import {
 } from '../types/index';
 import BaseContract from './base-contract';
 import { ChainName } from '../types/index';
-import { THRESHOLD_2_3 } from 'common/utils';
+import { THRESHOLD_2_3 } from '../common/utils';
 
 
 export default class ArweaveContract extends BaseContract {

@@ -17,7 +17,7 @@ import {
 import BaseContract from './base-contract';
 import { ethers } from 'ethers';
 import { arseedingBase64ToHexStr, arseedingHexStrToBase64 } from '../common/str-util';
-import { THRESHOLD_2_3 } from 'common/utils';
+import { THRESHOLD_2_3 } from '../common/utils';
 
 
 export default class EthereumContract extends BaseContract {
