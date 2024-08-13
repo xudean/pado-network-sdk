@@ -158,10 +158,10 @@ export default class ArweaveContract extends BaseContract {
     if (!this.userKey) {
       throw Error('Please set user key!');
     }
-    let inputData = { dataId, consumerPk: this.userKey.pk };
-    // const TASKTYPE= 'ZKLHEDataSharing'
+    const inputData = { dataId, consumerPk: this.userKey.pk };
+    const TASK_TYPE= 'ZKLHEDataSharing';
     const taskId = await this.task.submit(
-      taskType,
+      TASK_TYPE,
       dataId as string,
       JSON.stringify(inputData),
       COMPUTE_LIMIT,

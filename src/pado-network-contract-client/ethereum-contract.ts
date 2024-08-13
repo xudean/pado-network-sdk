@@ -194,7 +194,7 @@ export default class EthereumContract extends BaseContract {
 
     let dataFromContract = await this.data.getDataById(task.dataId);
     const itemIdForArSeeding = arseedingHexStrToBase64(dataFromContract.dataContent);
-    console.log(`itemIdForArSeeding:${itemIdForArSeeding}`)
+    console.log(`itemIdForArSeeding:${itemIdForArSeeding}`);
     const encData = await this.storage.getData(itemIdForArSeeding);
     const chosenIndices = [];
     const reencChosenSks = [];
@@ -202,7 +202,7 @@ export default class EthereumContract extends BaseContract {
       if(task.computingInfo.results[i].length===0){
         continue;
       }
-      const dataItemId = arseedingHexStrToBase64(task.computingInfo.results[i])
+      const dataItemId = arseedingHexStrToBase64(task.computingInfo.results[i]);
       reencChosenSks.push(Buffer.from(await this.storage.getData(dataItemId)).toString('hex'));
       chosenIndices.push(i+1);
     }
