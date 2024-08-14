@@ -17,6 +17,7 @@ import {
 import BaseContract from './base-contract';
 import { ethers } from 'ethers';
 import { arseedingBase64ToHexStr, arseedingHexStrToBase64 } from '../common/str-util';
+import { THRESHOLD_2_3 } from '../common/utils';
 
 
 export default class EthereumContract extends BaseContract {
@@ -45,8 +46,8 @@ export default class EthereumContract extends BaseContract {
     }
   }
 
-  private async initializeUserKey(): Promise<void> {
-    this.userKey = await this.generateKey();
+  private async initializeUserKey(param_obj: any = THRESHOLD_2_3): Promise<void> {
+    this.userKey = await this.generateKey(param_obj);
   }
 
   /**
@@ -185,12 +186,16 @@ export default class EthereumContract extends BaseContract {
   }
 
 
+  /**
+   * @param taskId - The ID of the task to retrieve the result for.
+   * @param timeout - The maximum timeout, in milliseconds, defaults to 10000.
+   */
   async getTaskResult(taskId: string, timeout: number = 10000): Promise<Uint8Array> {
-    const task = await this.task.getCompletedTaskById(taskId);
+    const task = await this.task._getCompletedTaskByIdPromise(taskId,timeout);
 
     let dataFromContract = await this.data.getDataById(task.dataId);
     const itemIdForArSeeding = arseedingHexStrToBase64(dataFromContract.dataContent);
-    console.log(`itemIdForArSeeding:${itemIdForArSeeding}`)
+    console.log(`itemIdForArSeeding:${itemIdForArSeeding}`);
     const encData = await this.storage.getData(itemIdForArSeeding);
     const chosenIndices = [];
     const reencChosenSks = [];
@@ -198,7 +203,7 @@ export default class EthereumContract extends BaseContract {
       if(task.computingInfo.results[i].length===0){
         continue;
       }
-      const dataItemId = arseedingHexStrToBase64(task.computingInfo.results[i])
+      const dataItemId = arseedingHexStrToBase64(task.computingInfo.results[i]);
       reencChosenSks.push(Buffer.from(await this.storage.getData(dataItemId)).toString('hex'));
       chosenIndices.push(i+1);
     }

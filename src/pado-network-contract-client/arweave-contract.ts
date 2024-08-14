@@ -22,6 +22,7 @@ import {
 } from '../types/index';
 import BaseContract from './base-contract';
 import { ChainName } from '../types/index';
+import { THRESHOLD_2_3 } from '../common/utils';
 
 
 export default class ArweaveContract extends BaseContract {
@@ -49,8 +50,8 @@ export default class ArweaveContract extends BaseContract {
     }
   }
 
-  private async initializeUserKey(): Promise<void> {
-    this.userKey = await this.generateKey();
+  private async initializeUserKey(param_obj: any = THRESHOLD_2_3): Promise<void> {
+    this.userKey = await this.generateKey(param_obj);
   }
 
   /**
@@ -158,10 +159,10 @@ export default class ArweaveContract extends BaseContract {
     if (!this.userKey) {
       throw Error('Please set user key!');
     }
-    let inputData = { dataId, consumerPk: this.userKey.pk };
-    // const TASKTYPE= 'ZKLHEDataSharing'
+    const inputData = { dataId, consumerPk: this.userKey.pk };
+    const TASK_TYPE= 'ZKLHEDataSharing';
     const taskId = await this.task.submit(
-      taskType,
+      TASK_TYPE,
       dataId as string,
       JSON.stringify(inputData),
       COMPUTE_LIMIT,
