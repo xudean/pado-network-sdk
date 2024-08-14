@@ -1,8 +1,18 @@
+/**
+ * Price of data
+ * if symbol is 'wAR'(chainName is ao), a price of 1 means that the data price is 0.000000000001 wAR.
+ * if symbol is 'ETH'(chainName is holesky or ethereum)，a price of 1 means that the data price is 1wei
+ * price: The price of data
+ * symbol: The token symbol of price
+ */
 export interface PriceInfo {
   price: string;
   symbol: string;
 }
 
+/**
+ * used for DataMgt contract
+ */
 export interface PriceInfoT {
   price: Uint256; // The price of data
   tokenSymbol: string; // The token symbol of price
