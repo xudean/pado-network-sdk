@@ -28,7 +28,7 @@ Here we will introduce the steps on how to use the [PADO AO SDK](https://docs.pa
 
 
 ```sh
-npm install --save @padolabs/pado-ao-sdk
+npm install --save @padolabs/pado-network-sdk
 ```
 
 > Notes:
@@ -113,7 +113,7 @@ let priceInfo = { price: "200000000", symbol: "wAR" };
 **upload your data**
 
 ```ts
-import { uploadData } from "@padolabs/pado-ao-sdk";
+import { uploadData } from "@padolabs/pado-network-sdk";
 
 // upload your data (If you want to do a local test, refer to the README to initialize arweave and then pass it to uploadData)
 const dataId = await uploadData(data, dataTag, priceInfo, wallet);
@@ -168,7 +168,7 @@ The complete code can be found in [data_provider_arseeding.ts](https://github.co
 You should generates a pair of public and secret keys for encryption and decryption.
 
 ```ts
-import { generateKey } from "@padolabs/pado-ao-sdk";
+import { generateKey } from "@padolabs/pado-network-sdk";
 let key = await generateKey();
 ```
 In practice, you **SHOULD** store the key to a file.
@@ -180,7 +180,7 @@ In practice, you **SHOULD** store the key to a file.
 Here, you need a dataId, which is returned by the Data Provider through the `uploadData`.
 
 ```ts
-import { submitTask } from "@padolabs/pado-ao-sdk";
+import { submitTask } from "@padolabs/pado-network-sdk";
 let dataId = "xxxxxxxxxxxxxxxx";
 const taskId = await submitTask(dataId, key.pk, wallet);
 console.log(`TASKID=${taskId}`);
@@ -194,7 +194,7 @@ This will return a task id which used for getting the result.
 **get the result**
 
 ```ts
-import { getResult } from "@padolabs/pado-ao-sdk";
+import { getResult } from "@padolabs/pado-network-sdk";
 
 // get the result (If you want to do a local test, refer to the README to initialize arweave and then pass it to getResult)
 const [err, data] = await getResult(taskId, key.sk).then(data => [null, data]).catch(err => [err, null]);

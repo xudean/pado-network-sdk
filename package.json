@@ -1,11 +1,11 @@
 {
-  "name": "@padolabs/pado-ao-sdk",
+  "name": "@padolabs/pado-network-sdk",
   "version": "0.2.0",
   "author": "PADO Labs <dev@padolabs.org>",
-  "description": "pado-ao-sdk",
+  "description": "pado-network-sdk",
   "repository": {
     "type": "git",
-    "url": "https://github.com/pado-labs/pado-ao-sdk.git"
+    "url": "https://github.com/pado-labs/pado-network-sdk.git"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
