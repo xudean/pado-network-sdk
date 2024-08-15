@@ -128,7 +128,7 @@ uploadData(data: Uint8Array, dataTag: CommonObject, priceInfo: PriceInfo, encryp
 
   - **dataTag:** The data's metadata object. **Note: Please use an object format, not a string.**
 
-  - **priceInfo:** The data price symbol. Leran more bout [PriceInfo](#price_info_enum)
+  - **priceInfo:** The data price symbol. Leran more bout [PriceInfo](#price_info_enum)  
     Different `chainName` values correspond to different symbols.
   
     | chainName | symbol                    | minimum price(1 means) |
