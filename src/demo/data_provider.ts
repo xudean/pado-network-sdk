@@ -29,13 +29,13 @@ async function main() {
   // price for the data
   let priceInfo = { price: '200000000', symbol: 'wAR' };
   let key = await new Utils().generateKey();
-  const wallets = {
-    wallet: wallet,
-    storageWallet: wallet
-  };
+  // const wallets = {
+  //   wallet: wallet,
+  //   storageWallet: wallet
+  // };
 
   //chainName will provided by caller
-  const padoNetworkClient = new PadoNetworkContractClient('ao', StorageType.ARWEAVE, wallets);
+  const padoNetworkClient = new PadoNetworkContractClient('ao', wallet, StorageType.ARWEAVE);
 
   const dataId = await padoNetworkClient.uploadData(data, dataTag, priceInfo);
 
