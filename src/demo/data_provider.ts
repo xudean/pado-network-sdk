@@ -35,7 +35,7 @@ async function main() {
   // };
 
   //chainName will provided by caller
-  const padoNetworkClient = new PadoNetworkContractClient('ao', StorageType.ARWEAVE, wallet);
+  const padoNetworkClient = new PadoNetworkContractClient('ao', wallet, StorageType.ARWEAVE);
 
   const dataId = await padoNetworkClient.uploadData(data, dataTag, priceInfo);
 

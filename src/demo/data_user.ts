@@ -28,7 +28,7 @@ async function main() {
   };
 
   const keyInfo = await new Utils().generateKey();
-  const padoNetworkClient = new PadoNetworkContractClient('ao', StorageType.ARWEAVE, wallet);
+  const padoNetworkClient = new PadoNetworkContractClient('ao',wallet, StorageType.ARWEAVE );
   // submit a task to ao process
   const taskId = await padoNetworkClient.submitTask(TaskType.DATA_SHARING,dataId,keyInfo.pk);
   console.log(`TASKID=${taskId}`);
