@@ -91,11 +91,11 @@ The constructor for the `PadoNetworkContractClient`.
 >   - **Docs:** https://docs.everpay.io/en/docs/guide/overview
 >   - **Deposit:** https://app.everpay.io/deposit/ethereum-eth-0x0000000000000000000000000000000000000000
 
-| chainName | storageType | Wallet               |
-| --------- | ----------- | -------------------- |
-| ao        | ARWEAVE     | window.arweaveWallet |
-| holesky   | ARSEEDING   | window.ethereum      |
-| ethereum  | ARSEEDING   | window.ethereum      |
+| chainName | storageType | Wallet                          |
+| --------- | ----------- |---------------------------------|
+| ao        | ARWEAVE     | window.arweaveWallet(Arconnect) |
+| holesky   | ARSEEDING   | window.ethereum(metamask)       |
+| ethereum  | ARSEEDING   | window.ethereum(metamask)       |
 
 - **Returns**
 
