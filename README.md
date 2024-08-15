@@ -90,10 +90,11 @@ The constructor for the `PadoNetworkContractClient`.
 >   - **Homepage:** https://everpay.io/
 >   - **Docs:** https://docs.everpay.io/en/docs/guide/overview
 >   - **Deposit:** https://app.everpay.io/deposit/ethereum-eth-0x0000000000000000000000000000000000000000
+> - When using **ARWEAVE** as storage, user will pay AR to cover storage, computation, data, and other costs by ArConnect.
 
 | chainName | storageType | Wallet                          |
-| --------- | ----------- |---------------------------------|
-| ao        | ARWEAVE     | window.arweaveWallet(Arconnect) |
+| --------- | ----------- | ------------------------------- |
+| ao        | ARWEAVE     | window.arweaveWallet(ArConnect) |
 | holesky   | ARSEEDING   | window.ethereum(metamask)       |
 | ethereum  | ARSEEDING   | window.ethereum(metamask)       |
 
