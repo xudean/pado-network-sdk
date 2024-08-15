@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { exit } from 'node:process';
 import './proxy.js';
 import PadoNetworkContractClient from 'pado-network-contract-client/index';
-import { StorageType } from '../types';
+import { StorageType, TaskType } from '../types';
 import Utils from 'common/utils';
 
 /**
@@ -27,14 +27,15 @@ async function main() {
     storageWallet: wallet
   };
 
-  const padoNetworkClient = new PadoNetworkContractClient('ao', StorageType.ARWEAVE, wallets);
+  const keyInfo = await new Utils().generateKey();
+  const padoNetworkClient = new PadoNetworkContractClient('ao', StorageType.ARWEAVE, wallet);
   // submit a task to ao process
-  const taskId = await padoNetworkClient.submitTask('',dataId);
+  const taskId = await padoNetworkClient.submitTask(TaskType.DATA_SHARING,dataId,keyInfo.pk);
   console.log(`TASKID=${taskId}`);
   // timeout is 10s
   const timeout = 10 * 1000;
   // get the result (If you want to do a local test, refer to the README to initialize arweave and then pass it to getResult)
-  const [err, data] = await padoNetworkClient.getTaskResult(taskId, timeout).then(data => [null, data]).catch((err: any) => [err, null]);
+  const [err, data] = await padoNetworkClient.getTaskResult(taskId,keyInfo.sk, timeout).then(data => [null, data]).catch((err: any) => [err, null]);
   console.log(`err=${err}`);
   console.log(`data=${data}`);
 

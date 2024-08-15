@@ -66,7 +66,7 @@ export type PolicyInfo = {
   names: string[];
 };
 export type DataStatus = 'Valid' | 'All';
-export type TaskType = 'dataSharing' | '2' | '3';
+// export type TaskType = 'dataSharing' | '2' | '3';
 export type TaskDataInfoRequest = {
   price: number;
   dataDescription: string;
@@ -147,7 +147,7 @@ export enum TaskStatus {
 
 export type Task = {
   taskId: Bytes32; // The UID of the task.
-  taskType: TaskType; // The type of the task.
+  taskType: string; // The type of the task.
   consumerPk: Bytes; // The Public Key of the Network Consumer.
   tokenSymbol: string; // The token symbol of data and computing fee.
   dataId: Bytes32; // The id of the data
@@ -175,5 +175,9 @@ export type SupportedSymbols = 'AOCRED' | 'wAR' | 'AR' | 'ETH';
 export type ArseedingTagInfo = {
   tag: string,
   chainType: string
+}
+
+export enum TaskType{
+  DATA_SHARING = 'dataSharing'
 }
 

@@ -2,10 +2,8 @@ import {
   ChainName,
   CommonObject,
   EncryptionSchema,
-  KeyInfo,
   PriceInfo,
-  StorageType,
-  Wallets,
+  StorageType, TaskType,
   WalletWithType
 } from '../types/index';
 import ArweaveContract from './arweave-contract';
@@ -21,12 +19,12 @@ export default class PadoNetworkContractClient {
   private _client: any;
   private _storageType: StorageType;
 
-  constructor(chainName: ChainName, storageType: StorageType, wallet: any, userKey?: KeyInfo) {
+  constructor(chainName: ChainName, wallet: any, storageType: StorageType = StorageType.ARSEEDING) {
     let walletType = 'arweave';
     if (chainName === 'holesky' || chainName === 'ethereum') {
       walletType = 'metamask';
     }
-    let wallets:any = {};
+    let wallets: any = {};
     const walletInfo: WalletWithType = {
       wallet: wallet,
       walletType: walletType as any
@@ -37,11 +35,7 @@ export default class PadoNetworkContractClient {
     };
     wallets.wallet = walletInfo;
     wallets.storageWallet = storageWalletInfo;
-    if (userKey) {
-      this._client = new ContractClient[chainName](chainName, storageType, wallets, userKey);
-    } else {
-      this._client = new ContractClient[chainName](chainName, storageType, wallets);
-    }
+    this._client = new ContractClient[chainName](chainName, storageType, wallets);
     this._storageType = storageType;
   }
 
@@ -93,13 +87,13 @@ export default class PadoNetworkContractClient {
    * Submits a task for processing with specific parameters.
    *
    * @param taskType - The type of task to be submitted.
-   * @param wallet - The wallet object used for signing transactions.
    * @param dataId - The ID of the data to be processed in the task.
+   * @param publicKey - The public key of the network consumer used for encryption.
    *
    * @returns A promise that resolves to the ID of the submitted task.
    */
-  async submitTask(taskType: string, dataId: string) {
-    const taskId = await this._client.submitTask(taskType, dataId);
+  async submitTask(taskType: TaskType, dataId: string, publicKey: string) {
+    const taskId = await this._client.submitTask(taskType, dataId, publicKey);
     return taskId;
   }
 
@@ -107,11 +101,12 @@ export default class PadoNetworkContractClient {
    * Asynchronously retrieves the result of a task.
    *
    * @param taskId The unique identifier for the task.
+   * @param privateKey The private key used for decryption.
    * @param timeout The timeout duration in milliseconds, defaults to 10000ms.
    * @returns A promise that resolves to an array of unsigned 8-bit integers representing the task result.
    */
-  async getTaskResult(taskId: string, timeout: number = 10000): Promise<Uint8Array> {
-    const taskResult = await this._client.getTaskResult(taskId, timeout);
+  async getTaskResult(taskId: string, privateKey: string, timeout: number = 10000): Promise<Uint8Array> {
+    const taskResult = await this._client.getTaskResult(taskId, privateKey, timeout);
     return taskResult;
   }
 }

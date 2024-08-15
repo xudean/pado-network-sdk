@@ -9,16 +9,19 @@ import {
   type CommonObject,
   type EncryptionSchema,
   type FeeTokenInfo,
-  KeyInfo,
   type PriceInfo,
   StorageType,
-  Wallets
+  Wallets,
+  TaskType
 } from '../types/index';
 import BaseContract from './base-contract';
-import { ethers } from 'ethers';
+// import { ethers } from 'ethers';
 import { arseedingBase64ToHexStr, arseedingHexStrToBase64 } from '../common/str-util';
-import { THRESHOLD_2_3 } from '../common/utils';
+// import { THRESHOLD_2_3 } from '../common/utils';
 
+const TASK_MAPPING: { [key in TaskType]: number } = {
+  [TaskType.DATA_SHARING]: 0,
+};
 
 export default class EthereumContract extends BaseContract {
   worker: any;
@@ -26,28 +29,15 @@ export default class EthereumContract extends BaseContract {
   task: any;
   fee: any;
   helper: any;
-  userKey: KeyInfo | undefined;
 
-  constructor(chainName: ChainName, storageType: StorageType, wallets: Wallets, userKey?: KeyInfo) {
+  constructor(chainName: ChainName, storageType: StorageType, wallets: Wallets) {
     super(chainName, storageType, wallets);
-    const addresses = PADO_NETWORK_CONTRACT_ADDRESS[chainName]
-    this.worker = new Worker(chainName, wallets.wallet.wallet,(addresses as any).workerMgt);
-    this.data = new Data(chainName, wallets.wallet.wallet,(addresses as any).dataMgt);
-    this.task = new Task(chainName, wallets.wallet.wallet,(addresses as any).taskMgt);
-    this.fee = new Fee(chainName, wallets.wallet.wallet,(addresses as any).feeMgt);
+    const addresses = PADO_NETWORK_CONTRACT_ADDRESS[chainName];
+    this.worker = new Worker(chainName, wallets.wallet.wallet, (addresses as any).workerMgt);
+    this.data = new Data(chainName, wallets.wallet.wallet, (addresses as any).dataMgt);
+    this.task = new Task(chainName, wallets.wallet.wallet, (addresses as any).taskMgt);
+    this.fee = new Fee(chainName, wallets.wallet.wallet, (addresses as any).feeMgt);
     this.helper = new Helper(wallets.wallet.wallet);
-    if (userKey) {
-      this.userKey = userKey;
-    } else {
-      this.initializeUserKey().then(() => {
-      }).catch((err) => {
-        console.log(err);
-      });
-    }
-  }
-
-  private async initializeUserKey(param_obj: any = THRESHOLD_2_3): Promise<void> {
-    this.userKey = await this.generateKey(param_obj);
   }
 
   /**
@@ -73,10 +63,10 @@ export default class EthereumContract extends BaseContract {
 
     const tx = await this.data.prepareRegistry(encryptionSchema);
     const receipt = await tx.wait();
-    console.log(receipt)
-    const event = receipt.events.find((event: { event: any; })  => event.event === 'DataPrepareRegistry');
-    if(!event){
-      throw new Error('prepareRegistry failed')
+    console.log(receipt);
+    const event = receipt.events.find((event: { event: any; }) => event.event === 'DataPrepareRegistry');
+    if (!event) {
+      throw new Error('prepareRegistry failed');
     }
     const dataId = event.args.dataId;
     const publicKeys = event.args.publicKeys;
@@ -87,9 +77,9 @@ export default class EthereumContract extends BaseContract {
     const rawPublickeys = [];
     for (let i = 0; i < publicKeys.length; i++) {
       const publicKeyHashInStorageHexStr = publicKeys[i];
-      const rawPk = await this.storage.getData(arseedingHexStrToBase64(publicKeyHashInStorageHexStr))
-      rawPublickeys.push(Buffer.from(rawPk).toString('hex'))
-      indices.push(i+1)
+      const rawPk = await this.storage.getData(arseedingHexStrToBase64(publicKeyHashInStorageHexStr));
+      rawPublickeys.push(Buffer.from(rawPk).toString('hex'));
+      indices.push(i + 1);
     }
     const policy = {
       t: Number(encryptionSchema.t),
@@ -97,9 +87,9 @@ export default class EthereumContract extends BaseContract {
       indices,
       names
     };
-    console.log('rawPublickeys',rawPublickeys)
-    console.log('policy',policy)
-    const encryptData = this.encrypt_v2(rawPublickeys,data, policy);
+    console.log('rawPublickeys', rawPublickeys);
+    console.log('policy', policy);
+    const encryptData = this.encrypt_v2(rawPublickeys, data, policy);
 
 
     //save it to arweave
@@ -111,18 +101,19 @@ export default class EthereumContract extends BaseContract {
       tokenSymbol: 'ETH',
       price: priceInfo.price // TODO-ysm bigint
     };
-    console.log(`dataId:${dataId}`)
-    console.log(`dataTagStr :${dataTagStr}`)
-    console.log(`priceInfoStr:${priceInfoStr}`)
-    console.log(`transactionIdHexStr:${transactionIdHexStr}`)
+    console.log(`dataId:${dataId}`);
+    console.log(`dataTagStr :${dataTagStr}`);
+    console.log(`priceInfoStr:${priceInfoStr}`);
+    console.log(`transactionIdHexStr:${transactionIdHexStr}`);
     const registryTx = await this.data.register(dataId, dataTag, priceInfoStr, transactionIdHexStr);
     const registryReceipt = await registryTx.wait();
-    const registryEvent = registryReceipt.events.find((event: { event: any; })  => event.event === 'DataRegistered');
-    if(!registryEvent){
-      throw new Error('data register failed')
+    const registryEvent = registryReceipt.events.find((event: { event: any; }) => event.event === 'DataRegistered');
+    if (!registryEvent) {
+      throw new Error('data register failed');
     }
     return registryEvent.args.dataId;
   }
+
   /**
    * Asynchronously retrieves a list of data based on the specified status.
    * @param dataStatus - The status of the data to retrieve, defaults to 'Valid'.
@@ -153,7 +144,11 @@ export default class EthereumContract extends BaseContract {
    * @param dataId - The identifier of the data to be used in the task.
    * @returns {Promise<string>} - The ID of the submitted task.
    */
-  async submitTask(taskType: number, dataId: string) {
+  async submitTask(taskType: TaskType, dataId: string, publicKey: string) {
+    const realTaskType = TASK_MAPPING[taskType];
+    if(realTaskType === undefined){
+      throw new Error(`taskType ${taskType} is not supported`);
+    }
     let encData = await this.data.getDataById(dataId);
     const { priceInfo: priceObj, workerIds } = encData;
     const { tokenSymbol: symbol, price: dataPrice } = priceObj;
@@ -169,18 +164,15 @@ export default class EthereumContract extends BaseContract {
     const { computingPrice: nodePrice } = await this.fee.getFeeTokenBySymbol(symbol);
     const totalPrice = Number(dataPrice) + Number(nodePrice) * workerIds.length;
 
-    if (!this.userKey) {
-      throw Error('Please set user key!');
-    }
-    console.log(`Buffer.from(this.userKey.pk,'hex'):${Buffer.from(this.userKey.pk,'hex')}`)
-    const pkTransactionHash = await this.storage.submitData(new Uint8Array(Buffer.from(this.userKey.pk,'hex')),this.storageWallet);
+    // console.log(`Buffer.from(this.userKey.pk,'hex'):${Buffer.from(publicKey,'hex')}`);
+    const pkTransactionHash = await this.storage.submitData(new Uint8Array(Buffer.from(publicKey, 'hex')), this.storageWallet);
     const pkTransactionHashHexStr = arseedingBase64ToHexStr(pkTransactionHash);
-    const tx = await this.task.submitTask(taskType, pkTransactionHashHexStr, dataId,totalPrice);
+    const tx = await this.task.submitTask(realTaskType, pkTransactionHashHexStr, dataId, totalPrice);
     const receipt = await tx.wait();
-    console.log(receipt)
-    const event = receipt.events.find((event: { event: any; })  => event.event === 'TaskDispatched');
-    if(!event){
-      throw new Error('submitTask failed')
+    // console.log(receipt)
+    const event = receipt.events.find((event: { event: any; }) => event.event === 'TaskDispatched');
+    if (!event) {
+      throw new Error('submitTask failed');
     }
     return event.args.taskId;
   }
@@ -190,31 +182,26 @@ export default class EthereumContract extends BaseContract {
    * @param taskId - The ID of the task to retrieve the result for.
    * @param timeout - The maximum timeout, in milliseconds, defaults to 10000.
    */
-  async getTaskResult(taskId: string, timeout: number = 10000): Promise<Uint8Array> {
-    const task = await this.task._getCompletedTaskByIdPromise(taskId,timeout);
+  async getTaskResult(taskId: string, privateKey: string, timeout: number = 10000): Promise<Uint8Array> {
+    const task = await this.task._getCompletedTaskByIdPromise(taskId, timeout);
 
-    let dataFromContract = await this.data.getDataById(task.dataId);
+    const dataFromContract = await this.data.getDataById(task.dataId);
     const itemIdForArSeeding = arseedingHexStrToBase64(dataFromContract.dataContent);
     console.log(`itemIdForArSeeding:${itemIdForArSeeding}`);
     const encData = await this.storage.getData(itemIdForArSeeding);
     const chosenIndices = [];
     const reencChosenSks = [];
     for (let i = 0; i < task.computingInfo.results.length; i++) {
-      if(task.computingInfo.results[i].length===0){
+      if (task.computingInfo.results[i].length === 0) {
         continue;
       }
       const dataItemId = arseedingHexStrToBase64(task.computingInfo.results[i]);
       reencChosenSks.push(Buffer.from(await this.storage.getData(dataItemId)).toString('hex'));
-      chosenIndices.push(i+1);
+      chosenIndices.push(i + 1);
     }
-
-
-    if (!this.userKey) {
-      throw Error('Please set user key!');
-    }
-    console.log(`reencChosenSks:${reencChosenSks}`)
-    console.log(`encData:${encData}`)
-    console.log(`chosenIndices:${chosenIndices}`)
-    return this.decrypt_v2(reencChosenSks, this.userKey.sk, encData, chosenIndices);
+    // console.log(`reencChosenSks:${reencChosenSks}`);
+    // console.log(`encData:${encData}`);
+    // console.log(`chosenIndices:${chosenIndices}`);
+    return this.decrypt_v2(reencChosenSks, privateKey, encData, chosenIndices);
   }
 }

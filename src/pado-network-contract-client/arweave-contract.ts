@@ -13,17 +13,18 @@ import {
   TASKS_PROCESS_ID
 } from '../config';
 import {
-  KeyInfo,
   StorageType,
   type CommonObject,
   type EncryptionSchema,
   type PriceInfo,
-  Wallets
+  Wallets, TaskType
 } from '../types/index';
 import BaseContract from './base-contract';
 import { ChainName } from '../types/index';
-import { THRESHOLD_2_3 } from '../common/utils';
-
+// import { THRESHOLD_2_3 } from '../common/utils';
+const TASK_MAPPING: { [key in TaskType]: string } = {
+  [TaskType.DATA_SHARING]: 'ZKLHEDataSharing',
+};
 
 export default class ArweaveContract extends BaseContract {
   worker: any;
@@ -31,27 +32,14 @@ export default class ArweaveContract extends BaseContract {
   task: any;
   fee: any;
   helper: any;
-  userKey: KeyInfo | undefined;
 
-  constructor(chainName: ChainName, storageType: StorageType, wallets: Wallets, userKey?: KeyInfo) {
+  constructor(chainName: ChainName, storageType: StorageType, wallets: Wallets) {
     super(chainName, storageType, wallets);
     this.worker = new AoWorker();
     this.data = new AoData();
     this.task = new AoTask();
     this.fee = new AoFee();
     this.helper = new Helper();
-    if (userKey) {
-      this.userKey = userKey;
-    } else {
-      this.initializeUserKey().then(() => {
-      }).catch((err) => {
-        console.log(err);
-      });
-    }
-  }
-
-  private async initializeUserKey(param_obj: any = THRESHOLD_2_3): Promise<void> {
-    this.userKey = await this.generateKey(param_obj);
   }
 
   /**
@@ -79,7 +67,7 @@ export default class ArweaveContract extends BaseContract {
     // if (!encryptedData) {
     //   throw new Error('The encrypted Data to be uploaded can not be empty');
     // }
-    let transactionId = await this.storage.submitData(encryptData.enc_msg);
+    const transactionId = await this.storage.submitData(encryptData.enc_msg);
     dataTag['storageType'] = this.storage.StorageType;
 
     const txData = {
@@ -121,12 +109,16 @@ export default class ArweaveContract extends BaseContract {
    * Submits a task for processing with specific parameters.
    *
    * @param taskType - The type of task to be submitted.
-   * @param wallet - The wallet object used for signing transactions.
    * @param dataId - The ID of the data to be processed in the task.
+   * @param publicKey - The public key of the consumer.
    *
    * @returns A promise that resolves to the ID of the submitted task.
    */
-  async submitTask(taskType: string, dataId: string) {
+  async submitTask(taskType: TaskType, dataId: string, publicKey: string) {
+    const realTaskType = TASK_MAPPING[taskType];
+    if(realTaskType === undefined){
+      throw new Error(`taskType ${taskType} is not supported`);
+    }
     let encData = await this.data.getDataById(dataId);
     encData = JSON.parse(encData);
     const exData = JSON.parse(encData.data);
@@ -156,13 +148,10 @@ export default class ArweaveContract extends BaseContract {
         throw err;
       }
     }
-    if (!this.userKey) {
-      throw Error('Please set user key!');
-    }
-    const inputData = { dataId, consumerPk: this.userKey.pk };
-    const TASK_TYPE= 'ZKLHEDataSharing';
+
+    const inputData = { dataId, consumerPk: publicKey };
     const taskId = await this.task.submit(
-      TASK_TYPE,
+      realTaskType,
       dataId as string,
       JSON.stringify(inputData),
       COMPUTE_LIMIT,
@@ -177,10 +166,11 @@ export default class ArweaveContract extends BaseContract {
    * Asynchronously retrieves the result of a task.
    *
    * @param taskId The unique identifier for the task.
+   * @param privateKey The private key of the network consumer.
    * @param timeout The timeout duration in milliseconds, defaults to 10000ms.
    * @returns A promise that resolves to an array of unsigned 8-bit integers representing the task result.
    */
-  async getTaskResult(taskId: string, timeout: number = 10000): Promise<Uint8Array> {
+  async getTaskResult(taskId: string,privateKey: string, timeout: number = 10000): Promise<Uint8Array> {
     const taskStr = await this._getCompletedTaskPromise(taskId, timeout);
     const task = JSON.parse(taskStr);
     if (task.verificationError) {
@@ -214,12 +204,8 @@ export default class ArweaveContract extends BaseContract {
     if (chosenIndices.length < t) {
       throw `Insufficient number of chosen nodes, expect at least ${t}, actual ${chosenIndices.length}`;
     }
-    let encMsg = await this.storage.getData(exData.transactionId);
-
-    if (!this.userKey) {
-      throw Error('Please set user key!');
-    }
-    const res = this.decrypt(reencChosenSks, this.userKey.sk, exData.nonce, encMsg, chosenIndices);
+    const encMsg = await this.storage.getData(exData.transactionId);
+    const res = this.decrypt(reencChosenSks, privateKey, exData.nonce, encMsg, chosenIndices);
     return new Uint8Array(res.msg);
   }
 
