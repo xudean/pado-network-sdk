@@ -48,9 +48,7 @@ You can refer to project using vite. [link](https://github.com/pado-labs/pado-ao
 ### Getting Started
 #### Utils
 
-##### Generate Key
-
-<a id="generate_key"></a>
+##### Generate Key <a id="generate_key"></a>
 
 Generate public-private key pairs for submitting tasks and retrieving task results.
 
@@ -165,9 +163,9 @@ const dataId = await padoNetworkClient.uploadData(data, dataTag, priceInfo);
 
 
 
-##### Submit Task
+##### Submit Task <a id="submit_task"></a>
 
-<a id="submit_task"></a>
+
 
 Submit a task to the PADO Network. You must pay both the data fee corresponding to the `data provider` and the computing fee for the `workers`.
 
@@ -226,9 +224,7 @@ const data = await padoNetworkClient.getTaskResult(taskId, keyInfo.sk, timeout);
 
 #### Type And Enum
 
-##### KeyInfo
-
-<a id="key_info_enum"></a>
+##### KeyInfo <a id="key_info_enum"></a>
 
 ```javascript
 type KeyInfo = {
@@ -239,17 +235,13 @@ type KeyInfo = {
 };
 ```
 
-##### ChainName
-
-<a id="chain_name_enum"></a>
+##### ChainName <a id="chain_name_enum"></a>
 
 ```javascript
 type ChainName = 'ao' | 'holesky' | 'ethereum';
 ```
 
-##### StorageType
-
-<a id="storage_type_enum"></a>
+##### StorageType <a id="storage_type_enum"></a>
 
 ```javascript
 enum StorageType {
@@ -258,9 +250,7 @@ enum StorageType {
 }
 ```
 
-##### PriceInfo 
-
-<a id="price_info_enum"></a>
+##### PriceInfo  <a id="price_info_enum"></a>
 
 ```javascript
 /**
@@ -276,9 +266,7 @@ interface PriceInfo {
 }
 ```
 
-##### TaskType
-
-<a id="task_type_enum"></a>
+##### TaskType <a id="task_type_enum"></a>
 
 ```javascript
 export enum TaskType{
