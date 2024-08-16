@@ -152,7 +152,6 @@ export default class EthereumContract extends BaseContract {
     let encData = await this.data.getDataById(dataId);
     const { priceInfo: priceObj, workerIds } = encData;
     const { tokenSymbol: symbol, price: dataPrice } = priceObj;
-    debugger
     const isSupported = await this.fee.isSupportToken(symbol);
     if (!isSupported) {
       const supportTokens = await this.fee.getFeeTokens();

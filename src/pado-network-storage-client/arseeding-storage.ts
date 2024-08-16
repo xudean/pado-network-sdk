@@ -75,8 +75,8 @@ export default class ArseedingStorage extends BaseStorage {
         arJWK: 'use_wallet'
       });
       // pay
-      // const everHash = await payOrder(pay, order);
-      // console.log(everHash);
+      const everHash = await payOrder(pay, order);
+      console.log(`everHash:${everHash}`);
     } else {
       // metamask
       if (!provider) {
@@ -88,8 +88,8 @@ export default class ArseedingStorage extends BaseStorage {
         chainType: chainType as ChainType,
         ethConnectedSigner: signer as any
       });
-      // const everHash = await payOrder(pay, order);
-      // console.log(everHash);
+      const everHash = await payOrder(pay, order);
+      console.log(`everHash:${everHash}`);
     }
     return order.itemId;
   }
