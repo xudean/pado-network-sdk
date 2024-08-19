@@ -569,84 +569,6 @@
         "internalType": "bytes"
       },
       {
-        "name": "tokenSymbol",
-        "type": "string",
-        "internalType": "string"
-      },
-      {
-        "name": "dataInfoRequest",
-        "type": "tuple",
-        "internalType": "struct TaskDataInfoRequest",
-        "components": [
-          {
-            "name": "price",
-            "type": "uint256",
-            "internalType": "uint256"
-          },
-          {
-            "name": "dataDescription",
-            "type": "string",
-            "internalType": "string"
-          },
-          {
-            "name": "dataInputAmount",
-            "type": "uint32",
-            "internalType": "uint32"
-          }
-        ]
-      },
-      {
-        "name": "computingInfoRequest",
-        "type": "tuple",
-        "internalType": "struct ComputingInfoRequest",
-        "components": [
-          {
-            "name": "price",
-            "type": "uint256",
-            "internalType": "uint256"
-          },
-          {
-            "name": "t",
-            "type": "uint32",
-            "internalType": "uint32"
-          },
-          {
-            "name": "n",
-            "type": "uint32",
-            "internalType": "uint32"
-          }
-        ]
-      },
-      {
-        "name": "code",
-        "type": "bytes",
-        "internalType": "bytes"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "",
-        "type": "bytes32",
-        "internalType": "bytes32"
-      }
-    ],
-    "stateMutability": "payable"
-  },
-  {
-    "type": "function",
-    "name": "submitTask",
-    "inputs": [
-      {
-        "name": "taskType",
-        "type": "uint8",
-        "internalType": "enum TaskType"
-      },
-      {
-        "name": "consumerPk",
-        "type": "bytes",
-        "internalType": "bytes"
-      },
-      {
         "name": "dataId",
         "type": "bytes32",
         "internalType": "bytes32"
@@ -660,30 +582,6 @@
       }
     ],
     "stateMutability": "payable"
-  },
-  {
-    "type": "function",
-    "name": "submitTaskData",
-    "inputs": [
-      {
-        "name": "taskId",
-        "type": "bytes32",
-        "internalType": "bytes32"
-      },
-      {
-        "name": "data",
-        "type": "bytes",
-        "internalType": "bytes"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "",
-        "type": "bool",
-        "internalType": "bool"
-      }
-    ],
-    "stateMutability": "nonpayable"
   },
   {
     "type": "function",
