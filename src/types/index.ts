@@ -116,7 +116,7 @@ export type FeeTokenInfo = {
   tokenAddress: Address; // Fee token address.
   computingPrice: Uint256; // computing price.
 }
-export type  Allowance = {
+export type  Balance = {
   free: Uint256;
   locked: Uint256;
 }
@@ -166,7 +166,7 @@ export type Wallets = {
 
 export type WalletWithType = {
   wallet: any;
-  walletType: 'metamask'|'arweave'
+  walletType: 'metamask' | 'arweave'
 }
 
 export type SupportedSymbols = 'AOCRED' | 'wAR' | 'AR' | 'ETH';
@@ -177,7 +177,7 @@ export type ArseedingTagInfo = {
   chainType: string
 }
 
-export enum TaskType{
+export enum TaskType {
   DATA_SHARING = 'dataSharing'
 }
 

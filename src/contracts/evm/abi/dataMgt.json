@@ -202,9 +202,9 @@
     "name": "initialize",
     "inputs": [
       {
-        "name": "_workerMgt",
+        "name": "_router",
         "type": "address",
-        "internalType": "contract IWorkerMgt"
+        "internalType": "contract IRouter"
       },
       {
         "name": "contractOwner",
@@ -332,6 +332,19 @@
   },
   {
     "type": "function",
+    "name": "router",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract IRouter"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "transferOwnership",
     "inputs": [
       {
@@ -345,16 +358,16 @@
   },
   {
     "type": "function",
-    "name": "workerMgt",
-    "inputs": [],
-    "outputs": [
+    "name": "updateRouter",
+    "inputs": [
       {
-        "name": "",
+        "name": "_router",
         "type": "address",
-        "internalType": "contract IWorkerMgt"
+        "internalType": "contract IRouter"
       }
     ],
-    "stateMutability": "view"
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
     "type": "event",
@@ -429,6 +442,25 @@
         "type": "address",
         "indexed": true,
         "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RouterUpdated",
+    "inputs": [
+      {
+        "name": "oldRouter",
+        "type": "address",
+        "indexed": false,
+        "internalType": "contract IRouter"
+      },
+      {
+        "name": "newRouter",
+        "type": "address",
+        "indexed": false,
+        "internalType": "contract IRouter"
       }
     ],
     "anonymous": false

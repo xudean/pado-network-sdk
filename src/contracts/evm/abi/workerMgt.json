@@ -81,6 +81,25 @@
   },
   {
     "type": "function",
+    "name": "deregisterOperator",
+    "inputs": [
+      {
+        "name": "quorumNumbers",
+        "type": "bytes",
+        "internalType": "bytes"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "getDelegatorsByWorker",
     "inputs": [
       {
@@ -407,6 +426,87 @@
         "name": "",
         "type": "bytes32[]",
         "internalType": "bytes32[]"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getWorkersByIds",
+    "inputs": [
+      {
+        "name": "workerids",
+        "type": "bytes32[]",
+        "internalType": "bytes32[]"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple[]",
+        "internalType": "struct Worker[]",
+        "components": [
+          {
+            "name": "workerId",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "workerType",
+            "type": "uint8",
+            "internalType": "enum WorkerType"
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "desc",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "stakeAmount",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "owner",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "publicKey",
+            "type": "bytes",
+            "internalType": "bytes"
+          },
+          {
+            "name": "time",
+            "type": "uint64",
+            "internalType": "uint64"
+          },
+          {
+            "name": "status",
+            "type": "uint8",
+            "internalType": "enum WorkerStatus"
+          },
+          {
+            "name": "sucTasksAmount",
+            "type": "uint64",
+            "internalType": "uint64"
+          },
+          {
+            "name": "failTasksAmount",
+            "type": "uint64",
+            "internalType": "uint64"
+          },
+          {
+            "name": "delegationAmount",
+            "type": "uint256",
+            "internalType": "uint256"
+          }
+        ]
       }
     ],
     "stateMutability": "view"
@@ -766,6 +866,19 @@
   },
   {
     "type": "function",
+    "name": "version",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "pure"
+  },
+  {
+    "type": "function",
     "name": "workerIds",
     "inputs": [
       {
@@ -934,13 +1047,19 @@
   },
   {
     "type": "event",
-    "name": "SelectWorkers",
+    "name": "SelectDataWorkers",
     "inputs": [
       {
         "name": "dataId",
         "type": "bytes32",
         "indexed": true,
         "internalType": "bytes32"
+      },
+      {
+        "name": "workerIds",
+        "type": "bytes32[]",
+        "indexed": false,
+        "internalType": "bytes32[]"
       }
     ],
     "anonymous": false

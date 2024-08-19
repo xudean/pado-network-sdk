@@ -1,9 +1,10 @@
 import {
+  Address,
   ChainName,
   CommonObject,
   EncryptionSchema,
   PriceInfo,
-  StorageType, TaskType,
+  StorageType, TaskType, Uint256,
   WalletWithType
 } from '../types/index';
 import ArweaveContract from './arweave-contract';
@@ -108,5 +109,26 @@ export default class PadoNetworkContractClient {
   async getTaskResult(taskId: string, dataUserSk: string, timeout: number = 10000): Promise<Uint8Array> {
     const taskResult = await this._client.getTaskResult(taskId, dataUserSk, timeout);
     return taskResult;
+  }
+
+  /**
+   * @notice Get balance of token which can withdraw.
+   * @param userAddress user wallet address
+   * @param tokenSymbol token symbol
+   */
+  async getBalance(userAddress: Address, tokenSymbol: string) {
+    const balance = await this._client.getBalance(userAddress, tokenSymbol);
+    return balance;
+  }
+
+  /**
+   * withdraw token
+   * @param toAddress address to receive token
+   * @param tokenSymbol symbol
+   * @param amount amount of token
+   * @returns transaction
+   */
+  async withdrawToken(toAddress: Address, tokenSymbol: string, amount: Uint256) {
+    return await this._client.withdrawToken(toAddress, tokenSymbol, amount);
   }
 }
