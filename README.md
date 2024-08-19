@@ -252,8 +252,8 @@ withdrawToken(toAddress: Address, tokenSymbol: string, amount: Uint256): Promise
 ```
 
 - **Parameters**
-  - **toAddress**: Address to search
-  - **tokenSymbol**:  What token to search for. Now is `ETH`
+  - **toAddress**: Address to receive token
+  - **tokenSymbol**:  Which token to withdraw. Now is `ETH`
   - **amoun**: The amount you want to withdraw needs to be less than `free` above.
 - **Returns**
   - **Transaction**: Transaction infomation.

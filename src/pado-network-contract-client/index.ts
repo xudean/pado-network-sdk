@@ -123,9 +123,9 @@ export default class PadoNetworkContractClient {
 
   /**
    * withdraw token
-   * @param toAddress
-   * @param tokenSymbol
-   * @param amount
+   * @param toAddress address to receive token
+   * @param tokenSymbol symbol
+   * @param amount amount of token
    * @returns transaction
    */
   async withdrawToken(toAddress: Address, tokenSymbol: string, amount: Uint256) {
