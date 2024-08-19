@@ -17,7 +17,7 @@ import {
   type CommonObject,
   type EncryptionSchema,
   type PriceInfo,
-  Wallets, TaskType
+  Wallets, TaskType, type Address, Uint256
 } from '../types/index';
 import BaseContract from './base-contract';
 import { ChainName } from '../types/index';
@@ -208,6 +208,27 @@ export default class ArweaveContract extends BaseContract {
     const res = this.decrypt(reencChosenSks, dataUserSk, exData.nonce, encMsg, chosenIndices);
     return new Uint8Array(res.msg);
   }
+
+  /**
+   * @notice Get balance of token which can withdraw.
+   * @param userAddress user wallet address
+   * @param tokenSymbol token symbol
+   */
+  async getBalance(userAddress: Address, tokenSymbol: string){
+    return await this.fee.getBalance(userAddress, tokenSymbol);
+  }
+
+  /**
+   * withdraw token
+   * @param userAddress
+   * @param tokenSymbol
+   * @param amount
+   */
+  async withdrawToken(userAddress: Address, tokenSymbol: string, amount: Uint256){
+    return await this.fee.withdrawToken(userAddress, tokenSymbol, amount);
+  }
+
+
 
   /**
    * Asynchronously retrieves a completed task by its ID within a specified timeout.

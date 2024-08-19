@@ -12,7 +12,7 @@ import {
   type PriceInfo,
   StorageType,
   Wallets,
-  TaskType
+  TaskType, type Address, Uint256
 } from '../types/index';
 import BaseContract from './base-contract';
 // import { ethers } from 'ethers';
@@ -203,5 +203,24 @@ export default class EthereumContract extends BaseContract {
     // console.log(`encData:${encData}`);
     // console.log(`chosenIndices:${chosenIndices}`);
     return this.decrypt_v2(reencChosenSks, dataUserSk, encData, chosenIndices);
+  }
+
+  /**
+   * @notice Get balance of token which can withdraw.
+   * @param userAddress user wallet address
+   * @param tokenSymbol token symbol
+   */
+  async getBalance(userAddress: Address, tokenSymbol: string){
+    return await this.fee.getBalance(userAddress, tokenSymbol);
+  }
+
+  /**
+   * withdraw token
+   * @param userAddress
+   * @param tokenSymbol
+   * @param amount
+   */
+  async withdrawToken(userAddress: Address, tokenSymbol: string, amount: Uint256){
+    return await this.fee.withdrawToken(userAddress, tokenSymbol, amount);
   }
 }

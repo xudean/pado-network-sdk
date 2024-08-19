@@ -219,6 +219,55 @@ const data = await padoNetworkClient.getTaskResult(taskId, keyInfo.sk, timeout);
 
 > You need to make sure that the dataUserSk used and the dataUserPk used by the [submitTask](#) are part of the same key pair. keyInfo is generated at [Generate Key](#generate_key)
 
+##### Get balance can withdraw
+
+Get the balance of your wallet that can be withdrawn
+
+```
+getBalance(userAddress: Address, tokenSymbol: string): Promise<Balance>;
+```
+
+- **Parameters**
+  - **userAddress**: Address to search
+  - **tokenSymbol**:  What token to search for. Now is `ETH`
+- **Returns**
+  - **Balance**: The token of the address. Leran more about [Balance](#balance_info)
+- **Example**
+
+```javascript
+const balance = await padoNetworkClientRef.getBalance(address, 'ETH');
+console.log(balance.locked.toString());
+//The amount of free can be withdrawn
+console.log(balance.free.toString());
+```
+
+
+
+#####  Withdraw token
+
+Withdraw token.
+
+```typescript
+withdrawToken(userAddress: Address, tokenSymbol: string, amount: Uint256): Promise<Transaction>;
+```
+
+- **Parameters**
+  - **userAddress**: Address to search
+  - **tokenSymbol**:  What token to search for. Now is `ETH`
+  - **amoun**: The amount you want to withdraw needs to be less than `free` above.
+- **Returns**
+  - **Transaction**: Transaction infomation.
+- **Example**
+
+```javascript
+const amount = balance.free;
+debugger
+const transaction = await padoNetworkClientRef.current.withdrawToken(address, 'ETH', amount);
+console.log(transaction);
+```
+
+
+
 #### Type And Enum
 
 ##### KeyInfo <a id="key_info_enum"></a>
@@ -266,7 +315,16 @@ interface PriceInfo {
 ##### TaskType <a id="task_type_enum"></a>
 
 ```javascript
-export enum TaskType{
+enum TaskType{
   DATA_SHARING = 'dataSharing'
+}
+```
+
+#### Balance <a id="balance_info"></a>
+
+```javascript
+type Balance = {
+  free: Uint256;
+  locked: Uint256;
 }
 ```

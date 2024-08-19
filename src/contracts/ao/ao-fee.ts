@@ -1,9 +1,11 @@
 import { dryrun } from '@permaweb/aoconnect';
 import { TASKS_PROCESS_ID } from '../../config';
+import type { Address, Uint256 } from 'types';
 
 
 export  class AoFee {
-  constructor() {}
+  constructor() {
+  }
 
   /**
    * Asynchronously retrieves a completed task by its ID within a specified timeout.
@@ -22,5 +24,26 @@ export  class AoFee {
     });
     const res = Messages[0].Data;
     return res;
+  }
+
+  /**
+   * @notice Get balance of token which can withdraw.
+   * @param userAddress user wallet address
+   * @param tokenSymbol token symbol
+   */
+  async getBalance(userAddress: Address, tokenSymbol: string) {
+    //not supported, return 0 default
+    return 0;
+  }
+
+  /**
+   * withdraw token
+   * @param userAddress
+   * @param tokenSymbol
+   * @param amount
+   */
+  async withdrawToken(userAddress: Address, tokenSymbol: string, amount: Uint256) {
+    //empty
+    return;
   }
 }

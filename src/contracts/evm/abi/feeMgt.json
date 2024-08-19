@@ -35,10 +35,23 @@
   },
   {
     "type": "function",
-    "name": "getAllowance",
+    "name": "deleteFeeToken",
     "inputs": [
       {
-        "name": "dataUser",
+        "name": "tokenSymbol",
+        "type": "string",
+        "internalType": "string"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "getBalance",
+    "inputs": [
+      {
+        "name": "eoa",
         "type": "address",
         "internalType": "address"
       },
@@ -52,7 +65,7 @@
       {
         "name": "",
         "type": "tuple",
-        "internalType": "struct Allowance",
+        "internalType": "struct Balance",
         "components": [
           {
             "name": "free",
@@ -140,9 +153,9 @@
     "name": "initialize",
     "inputs": [
       {
-        "name": "_taskMgt",
+        "name": "_router",
         "type": "address",
-        "internalType": "contract ITaskMgt"
+        "internalType": "contract IRouter"
       },
       {
         "name": "computingPriceForETH",
@@ -226,6 +239,34 @@
   },
   {
     "type": "function",
+    "name": "payWorker",
+    "inputs": [
+      {
+        "name": "taskId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "submitter",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "workerOwner",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "tokenSymbol",
+        "type": "string",
+        "internalType": "string"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "renounceOwnership",
     "inputs": [],
     "outputs": [],
@@ -233,16 +274,16 @@
   },
   {
     "type": "function",
-    "name": "setTaskMgt",
-    "inputs": [
+    "name": "router",
+    "inputs": [],
+    "outputs": [
       {
-        "name": "_taskMgt",
+        "name": "",
         "type": "address",
-        "internalType": "contract ITaskMgt"
+        "internalType": "contract IRouter"
       }
     ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
+    "stateMutability": "view"
   },
   {
     "type": "function",
@@ -254,11 +295,6 @@
         "internalType": "bytes32"
       },
       {
-        "name": "taskResultStatus",
-        "type": "uint8",
-        "internalType": "enum TaskStatus"
-      },
-      {
         "name": "submitter",
         "type": "address",
         "internalType": "address"
@@ -267,11 +303,6 @@
         "name": "tokenSymbol",
         "type": "string",
         "internalType": "string"
-      },
-      {
-        "name": "workerOwners",
-        "type": "address[]",
-        "internalType": "address[]"
       },
       {
         "name": "dataPrice",
@@ -292,19 +323,6 @@
       }
     ],
     "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "taskMgt",
-    "inputs": [],
-    "outputs": [
-      {
-        "name": "",
-        "type": "address",
-        "internalType": "contract ITaskMgt"
-      }
-    ],
-    "stateMutability": "view"
   },
   {
     "type": "function",
@@ -398,6 +416,19 @@
         "internalType": "bool"
       }
     ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "updateRouter",
+    "inputs": [
+      {
+        "name": "_router",
+        "type": "address",
+        "internalType": "contract IRouter"
+      }
+    ],
+    "outputs": [],
     "stateMutability": "nonpayable"
   },
   {
@@ -500,6 +531,19 @@
   },
   {
     "type": "event",
+    "name": "FeeTokenDeleted",
+    "inputs": [
+      {
+        "name": "tokenSymbol",
+        "type": "string",
+        "indexed": true,
+        "internalType": "string"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
     "name": "FeeTokenUpdated",
     "inputs": [
       {
@@ -582,19 +626,19 @@
   },
   {
     "type": "event",
-    "name": "TaskMgtUpdated",
+    "name": "RouterUpdated",
     "inputs": [
       {
-        "name": "from",
+        "name": "oldRouter",
         "type": "address",
         "indexed": false,
-        "internalType": "address"
+        "internalType": "contract IRouter"
       },
       {
-        "name": "to",
+        "name": "newRouter",
         "type": "address",
         "indexed": false,
-        "internalType": "address"
+        "internalType": "contract IRouter"
       }
     ],
     "anonymous": false

@@ -1,4 +1,9 @@
+
+
+
+
 # Overview
+
 Here, we will introduce the steps for using the [PADO NETWORK SDK](https://github.com/pado-labs/pado-ao-sdk/tree/feature/v2) with examples.
 
 # Preparations
@@ -121,6 +126,26 @@ const dataId = await padoNetworkClient.uploadData(data, dataTag, priceInfo, sche
 ```
 
 If everything is fine and there are no exceptions, you will get the <a id='data_id'>`dataId`</a>, and you can query the data you uploaded based on that ID.
+
+### Retrieve the withdrawable balance and proceed with the withdrawal.
+
+When data is purchased, the data provider is able to receive a token reward, you can check the withdrawable balance and withdraw it in the following ways.
+
+>  ***Note:*** 
+>
+> Currently,  `getBalance` and `withdrawToken` are only supported on the ***Holesky*** and ***Ethereum*** chains is supported, and only ***ETH*** is supported.
+
+#### Get balance
+
+```javascript
+const balance = await padoNetworkClientRef.current.getBalance(address, 'ETH');
+console.log(balance.locked.toString());
+console.log(balance.free.toString());
+const transaction = await padoNetworkClientRef.current.withdrawToken(metamaskAddress, 'ETH', balance.free);
+console.log(transaction);
+```
+
+
 
 
 ## Data User

@@ -1,6 +1,6 @@
-import type { Address, Allowance, Bytes32, FeeTokenInfo, Uint256 } from '../../types/index';
+import type { Address, Balance, Bytes32, FeeTokenInfo, Uint256 } from '../../types/index';
+import { ChainName } from '../../types/index';
 import BaseEvm from './base-evm';
-import {ChainName} from '../../types/index';
 import abiJson from './abi/feeMgt.json';
 
 export default class Fee extends BaseEvm {
@@ -50,7 +50,7 @@ export default class Fee extends BaseEvm {
    * @param tokenSymbol The token symbol for the data user
    * @return Allowance for the data user
    */
-  async getAllowance(userAddress: Address, tokenSymbol: string): Promise<Allowance> {
+  async getAllowance(userAddress: Address, tokenSymbol: string): Promise<Balance> {
     const allowance = await this.contractInstance.getAllowance(userAddress, tokenSymbol);
     return allowance;
   }
@@ -72,7 +72,7 @@ export default class Fee extends BaseEvm {
     workerOwners: Address[],
     dataPrice: Uint256,
     dataProviders: Address[]
-  ): Promise<Allowance> {
+  ): Promise<Balance> {
     const allowance = await this.contractInstance.lock(
       taskId,
       submitter,
@@ -90,8 +90,28 @@ export default class Fee extends BaseEvm {
    * @param tokenSymbol The token symbol
    * @param amount The amount of tokens to be transfered
    */
-  async transferToken(from: Address, tokenSymbol: string, amount: Uint256): Promise<Allowance> {
+  async transferToken(from: Address, tokenSymbol: string, amount: Uint256): Promise<Balance> {
     const allowance = await this.contractInstance.transferToken(from, tokenSymbol, amount);
     return allowance;
+  }
+
+  /**
+   * @notice Get balance of token which can withdraw.
+   * @param userAddress user wallet address
+   * @param tokenSymbol token symbol
+   */
+  async getBalance(userAddress: Address, tokenSymbol: string){
+    return await this.contractInstance.getBalance(userAddress, tokenSymbol);
+  }
+
+  /**
+   * withdraw token
+   * @param userAddress user wallet address
+   * @param tokenSymbol token symbol
+   * @param amount withdraw amount
+   */
+  async withdrawToken(userAddress: Address, tokenSymbol: string, amount: Uint256){
+    const tx= await this.contractInstance.withdrawToken(userAddress, tokenSymbol, amount);
+    return await tx.wait();
   }
 }

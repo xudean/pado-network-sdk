@@ -10,32 +10,6 @@
   },
   {
     "type": "function",
-    "name": "dataMgt",
-    "inputs": [],
-    "outputs": [
-      {
-        "name": "",
-        "type": "address",
-        "internalType": "contract IDataMgt"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "feeMgt",
-    "inputs": [],
-    "outputs": [
-      {
-        "name": "",
-        "type": "address",
-        "internalType": "contract IFeeMgt"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
     "name": "getCompletedTaskById",
     "inputs": [
       {
@@ -133,9 +107,14 @@
                 "internalType": "bytes[]"
               },
               {
-                "name": "waitingList",
-                "type": "bytes32[]",
-                "internalType": "bytes32[]"
+                "name": "hasReported",
+                "type": "bool[]",
+                "internalType": "bool[]"
+              },
+              {
+                "name": "reportCount",
+                "type": "uint32",
+                "internalType": "uint32"
               }
             ]
           },
@@ -257,9 +236,14 @@
                 "internalType": "bytes[]"
               },
               {
-                "name": "waitingList",
-                "type": "bytes32[]",
-                "internalType": "bytes32[]"
+                "name": "hasReported",
+                "type": "bool[]",
+                "internalType": "bool[]"
+              },
+              {
+                "name": "reportCount",
+                "type": "uint32",
+                "internalType": "uint32"
               }
             ]
           },
@@ -387,9 +371,14 @@
                 "internalType": "bytes[]"
               },
               {
-                "name": "waitingList",
-                "type": "bytes32[]",
-                "internalType": "bytes32[]"
+                "name": "hasReported",
+                "type": "bool[]",
+                "internalType": "bool[]"
+              },
+              {
+                "name": "reportCount",
+                "type": "uint32",
+                "internalType": "uint32"
               }
             ]
           },
@@ -442,19 +431,9 @@
     "name": "initialize",
     "inputs": [
       {
-        "name": "_dataMgt",
+        "name": "_router",
         "type": "address",
-        "internalType": "contract IDataMgt"
-      },
-      {
-        "name": "_feeMgt",
-        "type": "address",
-        "internalType": "contract IFeeMgt"
-      },
-      {
-        "name": "_workerMgt",
-        "type": "address",
-        "internalType": "contract IWorkerMgt"
+        "internalType": "contract IRouter"
       },
       {
         "name": "contractOwner",
@@ -516,6 +495,19 @@
   },
   {
     "type": "function",
+    "name": "router",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract IRouter"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "setDataVerifier",
     "inputs": [
       {
@@ -561,6 +553,84 @@
       }
     ],
     "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "submitTask",
+    "inputs": [
+      {
+        "name": "taskType",
+        "type": "uint8",
+        "internalType": "enum TaskType"
+      },
+      {
+        "name": "consumerPk",
+        "type": "bytes",
+        "internalType": "bytes"
+      },
+      {
+        "name": "tokenSymbol",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "dataInfoRequest",
+        "type": "tuple",
+        "internalType": "struct TaskDataInfoRequest",
+        "components": [
+          {
+            "name": "price",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "dataDescription",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "dataInputAmount",
+            "type": "uint32",
+            "internalType": "uint32"
+          }
+        ]
+      },
+      {
+        "name": "computingInfoRequest",
+        "type": "tuple",
+        "internalType": "struct ComputingInfoRequest",
+        "components": [
+          {
+            "name": "price",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "t",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "n",
+            "type": "uint32",
+            "internalType": "uint32"
+          }
+        ]
+      },
+      {
+        "name": "code",
+        "type": "bytes",
+        "internalType": "bytes"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "stateMutability": "payable"
   },
   {
     "type": "function",
@@ -656,6 +726,19 @@
   },
   {
     "type": "function",
+    "name": "updateRouter",
+    "inputs": [
+      {
+        "name": "_router",
+        "type": "address",
+        "internalType": "contract IRouter"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "updateTask",
     "inputs": [
       {
@@ -688,16 +771,10 @@
   },
   {
     "type": "function",
-    "name": "workerMgt",
+    "name": "updateTasks",
     "inputs": [],
-    "outputs": [
-      {
-        "name": "",
-        "type": "address",
-        "internalType": "contract IWorkerMgt"
-      }
-    ],
-    "stateMutability": "view"
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
     "type": "event",
@@ -746,6 +823,25 @@
         "type": "address",
         "indexed": false,
         "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RouterUpdated",
+    "inputs": [
+      {
+        "name": "oldRouter",
+        "type": "address",
+        "indexed": false,
+        "internalType": "contract IRouter"
+      },
+      {
+        "name": "newRouter",
+        "type": "address",
+        "indexed": false,
+        "internalType": "contract IRouter"
       }
     ],
     "anonymous": false
