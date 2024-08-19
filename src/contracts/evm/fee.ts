@@ -106,12 +106,12 @@ export default class Fee extends BaseEvm {
 
   /**
    * withdraw token
-   * @param userAddress user wallet address
+   * @param toAddress user wallet address
    * @param tokenSymbol token symbol
    * @param amount withdraw amount
    */
-  async withdrawToken(userAddress: Address, tokenSymbol: string, amount: Uint256){
-    const tx= await this.contractInstance.withdrawToken(userAddress, tokenSymbol, amount);
+  async withdrawToken(toAddress: Address, tokenSymbol: string, amount: Uint256){
+    const tx= await this.contractInstance.withdrawToken(toAddress, tokenSymbol, amount);
     return await tx.wait();
   }
 }

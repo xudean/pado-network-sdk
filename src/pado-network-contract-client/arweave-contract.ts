@@ -220,12 +220,12 @@ export default class ArweaveContract extends BaseContract {
 
   /**
    * withdraw token
-   * @param userAddress
+   * @param toAddress
    * @param tokenSymbol
    * @param amount
    */
-  async withdrawToken(userAddress: Address, tokenSymbol: string, amount: Uint256){
-    return await this.fee.withdrawToken(userAddress, tokenSymbol, amount);
+  async withdrawToken(toAddress: Address, tokenSymbol: string, amount: Uint256){
+    return await this.fee.withdrawToken(toAddress, tokenSymbol, amount);
   }
 
 

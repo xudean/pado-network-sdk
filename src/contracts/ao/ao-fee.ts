@@ -38,11 +38,11 @@ export  class AoFee {
 
   /**
    * withdraw token
-   * @param userAddress
+   * @param toAddress
    * @param tokenSymbol
    * @param amount
    */
-  async withdrawToken(userAddress: Address, tokenSymbol: string, amount: Uint256) {
+  async withdrawToken(toAddress: Address, tokenSymbol: string, amount: Uint256) {
     //empty
     return;
   }

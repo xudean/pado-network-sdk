@@ -235,7 +235,7 @@ getBalance(userAddress: Address, tokenSymbol: string): Promise<Balance>;
 - **Example**
 
 ```javascript
-const balance = await padoNetworkClientRef.getBalance(address, 'ETH');
+const balance = await padoNetworkClient.getBalance(address, 'ETH');
 console.log(balance.locked.toString());
 //The amount of free can be withdrawn
 console.log(balance.free.toString());
@@ -248,11 +248,11 @@ console.log(balance.free.toString());
 Withdraw token.
 
 ```typescript
-withdrawToken(userAddress: Address, tokenSymbol: string, amount: Uint256): Promise<Transaction>;
+withdrawToken(toAddress: Address, tokenSymbol: string, amount: Uint256): Promise<Transaction>;
 ```
 
 - **Parameters**
-  - **userAddress**: Address to search
+  - **toAddress**: Address to search
   - **tokenSymbol**:  What token to search for. Now is `ETH`
   - **amoun**: The amount you want to withdraw needs to be less than `free` above.
 - **Returns**
@@ -262,7 +262,7 @@ withdrawToken(userAddress: Address, tokenSymbol: string, amount: Uint256): Promi
 ```javascript
 const amount = balance.free;
 debugger
-const transaction = await padoNetworkClientRef.current.withdrawToken(address, 'ETH', amount);
+const transaction = await padoNetworkClient.withdrawToken(address, 'ETH', amount);
 console.log(transaction);
 ```
 

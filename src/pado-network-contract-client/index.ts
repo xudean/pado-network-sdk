@@ -123,12 +123,12 @@ export default class PadoNetworkContractClient {
 
   /**
    * withdraw token
-   * @param userAddress
+   * @param toAddress
    * @param tokenSymbol
    * @param amount
    * @returns transaction
    */
-  async withdrawToken(userAddress: Address, tokenSymbol: string, amount: Uint256) {
-    return await this._client.withdrawToken(userAddress, tokenSymbol, amount);
+  async withdrawToken(toAddress: Address, tokenSymbol: string, amount: Uint256) {
+    return await this._client.withdrawToken(toAddress, tokenSymbol, amount);
   }
 }
