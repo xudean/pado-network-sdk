@@ -17,6 +17,13 @@ Here, we will introduce the steps for using the [PADO NETWORK SDK](https://githu
   - Ensure you have enough `wAR` in your wallet.
 
 ## How to run demo
+- clone the repo
+```shell
+git clone https://github.com/pado-labs/pado-ao-sdk.git
+cd  pado-ao-sdk
+git checkout feature/v2
+cd demo
+```
 - install packages 
 ```shell
 npm install
@@ -135,10 +142,10 @@ When data is purchased, the data provider is able to receive a token reward, you
 ##### Get balance
 
 ```javascript
-const balance = await padoNetworkClientRef.current.getBalance(address, 'ETH');
+const balance = await padoNetworkClient.getBalance(address, 'ETH');
 console.log(balance.locked.toString());
 console.log(balance.free.toString());
-const transaction = await padoNetworkClientRef.current.withdrawToken(metamaskAddress, 'ETH', balance.free);
+const transaction = await padoNetworkClient.withdrawToken(metamaskAddress, 'ETH', balance.free);
 console.log(transaction);
 ```
 
@@ -172,8 +179,7 @@ This will return a task id which used for getting the result.
 ```javascript
 //If you don't get the result after the timeout(default 60000 milesconds), a timeout error will be returned and you can re-call this method until you get the result.
 //Ensure that the keyInfo is the same object as the parameter passed to submitTask
-const timeout = 200000;
-const data = await padoNetworkClient.getTaskResult(taskId, keyInfo.sk, timeout);
+const data = await padoNetworkClient.getTaskResult(taskId, keyInfo.sk);
 ```
 
 If nothing goes wrong, you will get the `data` of the Data Provider. The data type returned is Uint8Array, you can do further processing.
