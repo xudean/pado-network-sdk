@@ -1,12 +1,9 @@
-
-
-
-
-# Overview
+# Pado Network SDK Demo
+## Overview
 
 Here, we will introduce the steps for using the [PADO NETWORK SDK](https://github.com/pado-labs/pado-ao-sdk/tree/feature/v2) with examples.
 
-# Preparations
+## Preparations
 - **Node.js >= 18**
 
   **MetaMask** (if the chain is `ethereum` or `holesky`)
@@ -19,7 +16,7 @@ Here, we will introduce the steps for using the [PADO NETWORK SDK](https://githu
 
   - Ensure you have enough `wAR` in your wallet.
 
-# How to run demo
+## How to run demo
 - install packages 
 ```shell
 npm install
@@ -29,14 +26,14 @@ npm install
 npm run dev
 ```
 - The demo will be served at http://localhost:5173.
-# Usage
-## Installation
+## Usage
+### Installation
 
 ```shell
 npm install --save @padolabs/pado-network-sdk
 ```
 
-## Init Client
+### Init Client
 
 ####  chain is `ao`
 
@@ -56,11 +53,11 @@ const wallet = window.ethereum;
 const padoNetworkClient = new PadoNetworkContractClient('holesky', wallet, 'arseeding');
 ```
 
-## Data Provider
+### Data Provider
 
-### Upload Data
+#### Upload Data
 
-#### prepare data
+##### prepare data
 
 ```javascript
 // data in Uint8Array format
@@ -70,16 +67,16 @@ const data = new Uint8Array(fileContent);
 //or read from file
 ```
 
-#### tag for the data
+##### tag for the data
 
 ```javascript
 // tag for the data, you can save filename and subffix here
 const dataTag = {'name': 'test','subffix':'txt'};
 ```
 
-#### price for the data
+##### price for the data
 
-##### if chainName is `holesky` or `ethereum`
+###### if chainName is `holesky` or `ethereum`
 
 ```javascript
 //this means price of the data is 0.0000001ETH
@@ -89,7 +86,7 @@ const priceInfo = {
 };
 ```
 
-##### if chainName is `ao` 
+###### if chainName is `ao` 
 
 > ```
 > NOTE: Currently, only wAR(the Wrapped AR in AO) is supported. In the example, 200000000 means 0.0002 wAR.
@@ -103,7 +100,7 @@ const priceInfo = {
 };
 ```
 
-##### encryption schema
+###### encryption schema
 
 ```javascript
 //Parameters required for data encryption
@@ -117,7 +114,7 @@ const schema = {
 }
 ```
 
-#####  upload data
+######  upload data
 
 <a id="upload_data"></a>
 
@@ -127,7 +124,7 @@ const dataId = await padoNetworkClient.uploadData(data, dataTag, priceInfo, sche
 
 If everything is fine and there are no exceptions, you will get the <a id='data_id'>`dataId`</a>, and you can query the data you uploaded based on that ID.
 
-### Retrieve the withdrawable balance and proceed with the withdrawal.
+#### Retrieve the withdrawable balance and proceed with the withdrawal.
 
 When data is purchased, the data provider is able to receive a token reward, you can check the withdrawable balance and withdraw it in the following ways.
 
@@ -135,7 +132,7 @@ When data is purchased, the data provider is able to receive a token reward, you
 >
 > Currently,  `getBalance` and `withdrawToken` are only supported on the ***Holesky*** and ***Ethereum*** chains is supported, and only ***ETH*** is supported.
 
-#### Get balance
+##### Get balance
 
 ```javascript
 const balance = await padoNetworkClientRef.current.getBalance(address, 'ETH');
@@ -148,8 +145,8 @@ console.log(transaction);
 
 
 
-## Data User
-### Generate key pair
+### Data User
+#### Generate key pair
 
 You should generates a pair of public and secret keys for encryption and decryption.
 
@@ -159,7 +156,7 @@ import {Utils} from "@padolabs/pado-network-sdk";
 const keyInfo = await new Utils().generateKey();
 ```
 
-### Submit task
+#### Submit task
 
 Here, you need a [dataId](#data_id), which is returned by the Data Provider through the [`uploadData`](upload_data).
 
@@ -170,13 +167,13 @@ const taskId = await padoNetworkClient.submitTask(TaskType.DATA_SHARING, userDat
 This will return a task id which used for getting the result.
 
 
-### Get task result
+#### Get task result
 
 ```javascript
-//If you don't get the result after the timeout(default 10000 milesconds), a timeout error will be returned and you can re-call this method until you get the result.
+//If you don't get the result after the timeout(default 60000 milesconds), a timeout error will be returned and you can re-call this method until you get the result.
 //Ensure that the keyInfo is the same object as the parameter passed to submitTask
 const timeout = 200000;
-const data = await padoNetworkClient.getTaskResult(taskId, keyInfo.sk, 200000);
+const data = await padoNetworkClient.getTaskResult(taskId, keyInfo.sk, timeout);
 ```
 
 If nothing goes wrong, you will get the `data` of the Data Provider. The data type returned is Uint8Array, you can do further processing.
