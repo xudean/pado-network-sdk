@@ -1,7 +1,7 @@
 # Pado Network SDK Demo
 ## Overview
 
-Here, we will introduce the steps for using the [PADO NETWORK SDK](https://github.com/pado-labs/pado-ao-sdk/tree/feature/v2) with examples.
+Here, we will introduce the steps for using the [PADO NETWORK SDK](https://github.com/pado-labs/pado-network-sdk/) with examples.
 
 ## Preparations
 - **Node.js >= 18**
@@ -10,7 +10,7 @@ Here, we will introduce the steps for using the [PADO NETWORK SDK](https://githu
 
   - Ensure you have enough `ETH` in your wallet for gas and computation fees.
   - everypay
-    - Ensure you have enough `ETH` in EverPay to cover storage fees. You can refer to the [SDK Documentation](https://github.com/pado-labs/pado-ao-sdk/tree/feature/v2?tab=readme-ov-file#instantiate-client) for more information.
+    - Ensure you have enough `ETH` in EverPay to cover storage fees. You can refer to the [SDK Documentation](https://github.com/pado-labs/pado-network-sdk?tab=readme-ov-file#instantiate-client) for more information.
 
   **ArConnect** (if the chain is `ao`)
 
@@ -19,9 +19,8 @@ Here, we will introduce the steps for using the [PADO NETWORK SDK](https://githu
 ## How to run demo
 - clone the repo
 ```shell
-git clone https://github.com/pado-labs/pado-ao-sdk.git
-cd  pado-ao-sdk
-git checkout feature/v2
+git clone https://github.com/pado-labs/pado-network-sdk.git
+cd  pado-network-sdk
 cd demo
 ```
 - install packages 
