@@ -6,7 +6,7 @@ The pado-network-sdk helps developers use PADO Network, which provides trustless
 
 ## Quick Start
 
-- [Demos](https://github.com/pado-labs/pado-network-sdk/demo)
+- [Demos](https://github.com/pado-labs/pado-network-sdk/tree/main/demo)
 
 ## Usage
 
