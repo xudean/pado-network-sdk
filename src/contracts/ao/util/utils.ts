@@ -1,19 +1,19 @@
-import { result, message } from "@permaweb/aoconnect";
-import { AOCRED_PROCESS_ID, WAR_PROCESS_ID, TASKS_PROCESS_ID } from "../config";
+import { result, message } from '@permaweb/aoconnect';
+import { AOCRED_PROCESS_ID, WAR_PROCESS_ID, TASKS_PROCESS_ID } from '../../../config';
 
 export const getTag = (Message: any, Tag: string) => {
-  const Tags = Message.Tags
-  for (let theTag of Tags) {
+  const Tags = Message.Tags;
+  for (const theTag of Tags) {
     if (theTag.name === Tag) {
-      return theTag.value
+      return theTag.value;
     }
   }
-  return null
-}
+  return null;
+};
 
 export const getMessageResultData = (Result: any/*type:MessageResult*/, showResult = false) => {
   if (showResult) {
-    console.log("Result:", JSON.stringify(Result));
+    console.log('Result:', JSON.stringify(Result));
   }
 
   if (Result.Error) {
