@@ -349,9 +349,9 @@ sequenceDiagram
     PADO Network Contracts->>+DataPermission Checker Contract: isPermitted
     DataPermission Checker Contract-->>PADO Network Contracts: true or false
     deactivate DataPermission Checker Contract
-    alt isPermitted:true
+    alt isPermitted:false
         PADO Network Contracts->>Data User: task failed
-    else isPermitted:false
+    else isPermitted:true
         PADO Network Contracts->>PADO Network Contracts: runTask
         PADO Network Contracts-->>Data User: task result
     end
