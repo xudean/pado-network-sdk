@@ -47,6 +47,7 @@ export default class PadoNetworkContractClient {
    * @param dataTag - the data meta info object
    * @param priceInfo - The data price symbol(symbol is optional, default is wAR) and price. Currently only wAR(the Wrapped AR in ao) is supported, with a minimum price unit of 1 (1 means 0.000000000001 wAR).
    * @param wallet - The ar wallet json object, this wallet must have AR Token. Pass `window.arweaveWallet` in a browser
+   * @param permissionCheckers - The contract addresses of the permission checkers.
    * @param encryptionSchema EncryptionSchema
    * @param extParam - The extParam object, which can be used to pass additional parameters to the upload process
    *                    - uploadParam : The uploadParam object, which can be used to pass additional parameters to the upload process
@@ -58,9 +59,10 @@ export default class PadoNetworkContractClient {
     data: Uint8Array,
     dataTag: CommonObject,
     priceInfo: PriceInfo,
+    permissionCheckers: Address[] = [],
     encryptionSchema: EncryptionSchema = DEFAULT_ENCRYPTION_SCHEMA
   ) {
-    const dataId = this._client.uploadData(data, dataTag, priceInfo, encryptionSchema);
+    const dataId = this._client.uploadData(data, dataTag, priceInfo,permissionCheckers, encryptionSchema);
     return dataId;
   }
 

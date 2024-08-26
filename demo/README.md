@@ -106,6 +106,12 @@ const priceInfo = {
 };
 ```
 
+###### dataPermissions
+```javascript
+//The addresses of the checkers. If you have no checkers, you can pass an empty array.
+const dataPermissions=[]
+```
+
 ###### encryption schema
 
 ```javascript
@@ -125,7 +131,7 @@ const schema = {
 <a id="upload_data"></a>
 
 ```javascript
-const dataId = await padoNetworkClient.uploadData(data, dataTag, priceInfo, schema);
+const dataId = await padoNetworkClient.uploadData(data, dataTag, priceInfo, dataPermissions, schema);
 ```
 
 If everything is fine and there are no exceptions, you will get the <a id='data_id'>`dataId`</a>, and you can query the data you uploaded based on that ID.
