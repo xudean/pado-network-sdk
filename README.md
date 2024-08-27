@@ -118,7 +118,7 @@ const padoNetworkClient = new PadoNetworkContractClient(chainName, wallet, stora
 Uploading data to the storage chain.
 
 ```
-uploadData(data: Uint8Array, dataTag: CommonObject, priceInfo: PriceInfo, encryptionSchema?: EncryptionSchema): Promise<string>;
+uploadData(data: Uint8Array, dataTag: CommonObject, priceInfo: PriceInfo, permissionCheckers?: string[], encryptionSchema?: EncryptionSchema): Promise<string>;
 ```
 
 - **Parameters**
@@ -137,6 +137,8 @@ uploadData(data: Uint8Array, dataTag: CommonObject, priceInfo: PriceInfo, encryp
     | ethereum  | ETH                       | 1 wei                  |
   
 
+  - **permissionCheckers(optional)**: The addresses of the checkers. The default is an empty array. Learn more about [IDataPermission](#solidity_data_permission)
+  
   - **encryptionSchema(optional)**: Parameters used by the algorithm. The default is:
   
     ```json
@@ -156,8 +158,11 @@ uploadData(data: Uint8Array, dataTag: CommonObject, priceInfo: PriceInfo, encryp
 const data = new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8]);
 const dataTag = { 'filename': 'testFileName' };
 const priceInfo = { price: '200000000', symbol: 'wAR' };
-
+//No data permission check by default
 const dataId = await padoNetworkClient.uploadData(data, dataTag, priceInfo);
+//If you want to set data permission checking contracts
+const permissionCheckers = ['0x.....','0x.......']
+const dataId = await padoNetworkClient.uploadData(data, dataTag, priceInfo, permissionCheckers);
 ```
 
 
@@ -328,3 +333,40 @@ type Balance = {
   locked: Uint256;
 }
 ```
+
+#### Solidity: IDataPermission<a id="solidity_data_permission"></a>
+
+Hooks that provide developers with custom checking logic to check the permissions of the task initiator before submitting the task, etc.
+
+Developers should implement the [IDataPermission]() contract to implement custom checking logic.
+
+```mermaid
+sequenceDiagram
+    Data User->>+PADO Network Contracts: submitTask
+    loop
+       Data User->>PADO Network Contracts: getTaskResult
+    end
+    PADO Network Contracts->>+DataPermission Checker Contract: isPermitted
+    DataPermission Checker Contract-->>PADO Network Contracts: true or false
+    deactivate DataPermission Checker Contract
+    alt isPermitted:false
+        PADO Network Contracts->>Data User: task failed
+    else isPermitted:true
+        PADO Network Contracts->>PADO Network Contracts: runTask
+        PADO Network Contracts-->>Data User: task result
+    end
+
+    deactivate PADO Network Contracts
+```
+
+```solidity
+interface IDataPermission {
+    /**
+     * @notice Check whether data user can buy the data
+     * @param dataUser The data user to buy the data.
+     * @return Return true if the data user can buy the data, else false.
+     */
+    function isPermitted(address dataUser) external returns (bool);
+}
+```
+

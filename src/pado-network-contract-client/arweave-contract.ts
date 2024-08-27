@@ -48,9 +48,8 @@ export default class ArweaveContract extends BaseContract {
    * @param data - plain data need to encrypt and upload
    * @param dataTag - the data meta info object
    * @param priceInfo - The data price symbol(symbol is optional, default is wAR) and price. Currently only wAR(the Wrapped AR in ao) is supported, with a minimum price unit of 1 (1 means 0.000000000001 wAR).
-   * @param wallet - The ar wallet json object, this wallet must have AR Token. Pass `window.arweaveWallet` in a browser
+   * @param permissionCheckers - The addresses of the permission checkers.
    * @param encryptionSchema EncryptionSchema
-   * @param extParam - The extParam object, which can be used to pass additional parameters to the upload process
    *                    - uploadParam : The uploadParam object, which can be used to pass additional parameters to the upload process
    *                        - storageType : The storage type, default is ARWEAVE
    *                        - symbolTag :  The tag corresponding to the token used for payment. ref: https://web3infra.dev/docs/arseeding/sdk/arseeding-js/getTokenTag
@@ -60,6 +59,7 @@ export default class ArweaveContract extends BaseContract {
     data: Uint8Array,
     dataTag: CommonObject,
     priceInfo: PriceInfo,
+    permissionCheckers: Address[],
     encryptionSchema: EncryptionSchema = DEFAULT_ENCRYPTION_SCHEMA
   ) {
     const [policy, publicKeys] = await this.data.prepareRegistry(encryptionSchema);
