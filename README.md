@@ -354,6 +354,8 @@ sequenceDiagram
     deactivate PADO Network Contracts
 ```
 
+
+- IDataPermission.sol
 ```solidity
 interface IDataPermission {
     /**
@@ -365,3 +367,4 @@ interface IDataPermission {
 }
 ```
 
+An example for checking data whitelisting can be found at [WhiteListDataPermission](./demo/contracts/WhiteListDataPermission.sol)
