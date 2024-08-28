@@ -336,16 +336,11 @@ type Balance = {
 
 #### Solidity: IDataPermission<a id="solidity_data_permission"></a>
 
-Hooks that provide developers with custom checking logic to check the permissions of the task initiator before submitting the task, etc.
-
-Developers should implement the [IDataPermission]() contract to implement custom checking logic.
+Developers should implement the [IDataPermission](https://github.com/pado-labs/pado-network-contracts/blob/main/contracts/interface/IDataPermission.sol) contract to create custom checking logic. Data provider can assign a `checker contract address` for data permission checking while uploading data. When task submitted by a data user, the `PADO Network Contract` requests permission from the assigned contract and then decides whether to continue or terminate the task based on the results returned.
 
 ```mermaid
 sequenceDiagram
     Data User->>+PADO Network Contracts: submitTask
-    loop
-       Data User->>PADO Network Contracts: getTaskResult
-    end
     PADO Network Contracts->>+DataPermission Checker Contract: isPermitted
     DataPermission Checker Contract-->>PADO Network Contracts: true or false
     deactivate DataPermission Checker Contract
@@ -359,6 +354,8 @@ sequenceDiagram
     deactivate PADO Network Contracts
 ```
 
+
+- IDataPermission.sol
 ```solidity
 interface IDataPermission {
     /**
@@ -370,3 +367,4 @@ interface IDataPermission {
 }
 ```
 
+An example for checking data whitelisting can be found at [WhiteListDataPermission](./demo/contracts/WhiteListDataPermission.sol)
