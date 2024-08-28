@@ -33,10 +33,11 @@ export default class Data extends BaseEvm {
    * @param dataTag The tag of data, providing basic information about data.
    * @param priceInfo The price infomation of data.
    * @param dataContent The content of data.
+   * @param permissionCheckers The address of permission checkers.
    * @return The UID of the data
    */
-  async register(dataId: Bytes32, dataTag: string, priceInfo: PriceInfoT, dataContent: Bytes): Promise<Bytes32> {
-    return await this.contractInstance.register(dataId, dataTag, priceInfo, dataContent);
+  async register(dataId: Bytes32, dataTag: string, priceInfo: PriceInfoT, dataContent: Bytes,permissionCheckers: Address[]): Promise<Bytes32> {
+    return await this.contractInstance.register(dataId, dataTag, priceInfo, dataContent, permissionCheckers);
   }
 
   /**

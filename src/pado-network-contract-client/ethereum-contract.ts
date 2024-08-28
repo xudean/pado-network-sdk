@@ -46,9 +46,8 @@ export default class EthereumContract extends BaseContract {
    * @param data - plain data need to encrypt and upload
    * @param dataTag - the data meta info object
    * @param priceInfo - The data price symbol(symbol is optional, default is wAR) and price. Currently only wAR(the Wrapped AR in ao) is supported, with a minimum price unit of 1 (1 means 0.000000000001 wAR).
-   * @param wallet - The ar wallet json object, this wallet must have AR Token. Pass `window.arweaveWallet` in a browser
+   * @param permissionCheckers - The addresses of the permission checkers.
    * @param encryptionSchema EncryptionSchema
-   * @param extParam - The extParam object, which can be used to pass additional parameters to the upload process
    *                    - uploadParam : The uploadParam object, which can be used to pass additional parameters to the upload process
    *                        - storageType : The storage type, default is ARWEAVE
    *                        - symbolTag :  The tag corresponding to the token used for payment. ref: https://web3infra.dev/docs/arseeding/sdk/arseeding-js/getTokenTag
@@ -58,12 +57,13 @@ export default class EthereumContract extends BaseContract {
     data: Uint8Array,
     dataTag: CommonObject,
     priceInfo: PriceInfo,
+    permissionCheckers: Address[],
     encryptionSchema: EncryptionSchema = DEFAULT_ENCRYPTION_SCHEMA
   ) {
 
     const tx = await this.data.prepareRegistry(encryptionSchema);
     const receipt = await tx.wait();
-    console.log(receipt);
+    // console.log(receipt);
     const event = receipt.events.find((event: { event: any; }) => event.event === 'DataPrepareRegistry');
     if (!event) {
       throw new Error('prepareRegistry failed');
@@ -87,8 +87,8 @@ export default class EthereumContract extends BaseContract {
       indices,
       names
     };
-    console.log('rawPublickeys', rawPublickeys);
-    console.log('policy', policy);
+    // console.log('rawPublickeys', rawPublickeys);
+    // console.log('policy', policy);
     const encryptData = this.encrypt_v2(rawPublickeys, data, policy);
 
 
@@ -101,11 +101,11 @@ export default class EthereumContract extends BaseContract {
       tokenSymbol: 'ETH',
       price: priceInfo.price // TODO-ysm bigint
     };
-    console.log(`dataId:${dataId}`);
-    console.log(`dataTagStr :${dataTagStr}`);
-    console.log(`priceInfoStr:${priceInfoStr}`);
-    console.log(`transactionIdHexStr:${transactionIdHexStr}`);
-    const registryTx = await this.data.register(dataId, dataTag, priceInfoStr, transactionIdHexStr);
+    // console.log(`dataId:${dataId}`);
+    // console.log(`dataTagStr :${dataTagStr}`);
+    // console.log(`priceInfoStr:${priceInfoStr}`);
+    // console.log(`transactionIdHexStr:${transactionIdHexStr}`);
+    const registryTx = await this.data.register(dataId, dataTag, priceInfoStr, transactionIdHexStr, permissionCheckers);
     const registryReceipt = await registryTx.wait();
     const registryEvent = registryReceipt.events.find((event: { event: any; }) => event.event === 'DataRegistered');
     if (!registryEvent) {
@@ -120,7 +120,7 @@ export default class EthereumContract extends BaseContract {
    * @returns A promise that resolves to the retrieved data list.
    */
   async getDataList(dataStatus: string = 'Valid') {
-    console.log(`dataStatus is${dataStatus}`);
+    // console.log(`dataStatus is${dataStatus}`);
     const res = await this.data.getAllData();
     // TODO Filter data from various states
     return res;
@@ -187,7 +187,7 @@ export default class EthereumContract extends BaseContract {
 
     const dataFromContract = await this.data.getDataById(task.dataId);
     const itemIdForArSeeding = arseedingHexStrToBase64(dataFromContract.dataContent);
-    console.log(`itemIdForArSeeding:${itemIdForArSeeding}`);
+    // console.log(`itemIdForArSeeding:${itemIdForArSeeding}`);
     const encData = await this.storage.getData(itemIdForArSeeding);
     const chosenIndices = [];
     const reencChosenSks = [];
