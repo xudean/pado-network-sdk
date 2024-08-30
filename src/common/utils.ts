@@ -25,6 +25,11 @@ const lhe_call = (func: any, param_obj: any) => {
 
 export const THRESHOLD_2_3 = { t: 2, n: 3, indices: [1, 2, 3] };
 
+export interface Policy {
+  t: number, // threshold
+  n: number, // total_number
+};
+
 export default class Utils {
   constructor() { }
   /**
@@ -32,7 +37,7 @@ export default class Utils {
    *
    * @returns Return the key pair object which contains pk and sk fields
    */
-async generateKey(param_obj: any = THRESHOLD_2_3): Promise<KeyInfo> {
+  async generateKey(param_obj: any = THRESHOLD_2_3): Promise<KeyInfo> {
     return new Promise((resolve) => {
       setTimeout(() => {
         const keys = lhe_call(lhe._keygen, param_obj);
@@ -122,14 +127,23 @@ async generateKey(param_obj: any = THRESHOLD_2_3): Promise<KeyInfo> {
   }
 
 
+
+  /**
+   * 
+   * @returns `{sk, pk}`
+   */
+  keygen_v2() {
+    return lhe_call(lhe._keygen_v2, {});
+  }
+
   /**
    * 
    * @param publicKeys Sequence of public keys, which size is equal to policy.n
    * @param data Data to be encrypted
-   * @param policy {threshold(t), total_number(n)}
-   * @returns The encrypted data with some useful info
+   * @param policy Policy{t(threshold), n(total_number)}
+   * @returns The encrypted data(enc_msg) and encrypted secret keys(enc_sks)
    */
-  encrypt_v2(publicKeys: string[], data: Uint8Array, policy: any = THRESHOLD_2_3) {
+  encrypt_v2(publicKeys: string[], data: Uint8Array, policy: Policy) {
     let msg_len = data.length;
     let msg_ptr = lhe._malloc(msg_len);
     let msg_buffer = new Uint8Array(lhe.wasmMemory.buffer, msg_ptr, msg_len);
@@ -141,51 +155,62 @@ async generateKey(param_obj: any = THRESHOLD_2_3): Promise<KeyInfo> {
     lhe._free(msg_ptr)
 
     let dataview = new Uint8Array(lhe.wasmMemory.buffer, res.emsg_ptr, res.emsg_len);
-    res.enc_msg = new Uint8Array(dataview);
-    lhe._free(res.emsg_ptr)
+    let enc_msg = new Uint8Array(dataview);
+    lhe._free(res.emsg_ptr);
 
-    return res.enc_msg;
+    let enc_sks_dataview = new Uint8Array(lhe.wasmMemory.buffer, res.enc_sks_ptr, res.enc_sks_len);
+    let enc_sks = new Uint8Array(enc_sks_dataview);
+    lhe._free(res.enc_sks_ptr);
+
+    return { enc_msg, enc_sks };
   }
 
   /**
-  * 
-  * @param enc_sk_index 
-  * @param node_sk 
-  * @param consumer_pk 
-  * @param enc_msg 
-  * @returns The re-encrypt encrypted secret key
-  */
+   * 
+   * @param enc_sk_index The index of enc_sk start from 1
+   * @param node_sk 
+   * @param consumer_pk 
+   * @param enc_sks Returned by encrypt_v2
+   * @returns The re-encrypt encrypted secret key(reenc_sk)
+   */
   reencrypt_v2(
     enc_sk_index: number,
     node_sk: string,
     consumer_pk: string,
-    enc_msg: Uint8Array,
+    enc_sks: Uint8Array,
   ) {
-    let emsg_len = enc_msg.length;
-    let emsg_ptr = lhe._malloc(emsg_len);
-    let emsg_buffer = new Uint8Array(lhe.wasmMemory.buffer, emsg_ptr, emsg_len);
-    emsg_buffer.set(enc_msg);
+    let enc_sks_len = enc_sks.length;
+    let enc_sks_ptr = lhe._malloc(enc_sks_len);
+    let enc_sks_buffer = new Uint8Array(lhe.wasmMemory.buffer, enc_sks_ptr, enc_sks_len);
+    enc_sks_buffer.set(enc_sks)
 
-    let param_obj = { enc_sk_index: enc_sk_index, node_sk: node_sk, consumer_pk: consumer_pk, emsg_ptr: emsg_ptr, emsg_len: emsg_len };
+    let param_obj = {
+      enc_sk_index: enc_sk_index,
+      node_sk: node_sk,
+      consumer_pk: consumer_pk,
+      enc_sks_ptr: enc_sks_ptr,
+      enc_sks_len: enc_sks_len
+    };
 
     let res = lhe_call(lhe._reencrypt_v2, param_obj);
-    lhe._free(emsg_ptr)
+    lhe._free(enc_sks_ptr)
 
     let dataview = new Uint8Array(lhe.wasmMemory.buffer, res.reenc_ptr, res.reenc_len);
-    res.reenc_sk = new Uint8Array(dataview);
+    let reenc_sk = new Uint8Array(dataview);
     lhe._free(res.reenc_ptr)
 
-    return res.reenc_sk;
+    return { reenc_sk };
   }
 
+
   /**
-  * 
-  * @param reenc_sks 
-  * @param consumer_sk 
-  * @param enc_msg 
-  * @param chosen_indices 
-  * @returns The decrypted data
-  */
+   * 
+   * @param reenc_sks 
+   * @param consumer_sk 
+   * @param enc_msg Returned by encrypt_v2
+   * @param chosen_indices 
+   * @returns The decrypted data (msg)
+   */
   decrypt_v2(reenc_sks: string[],
     consumer_sk: string,
     enc_msg: Uint8Array,
@@ -197,17 +222,20 @@ async generateKey(param_obj: any = THRESHOLD_2_3): Promise<KeyInfo> {
     emsg_buffer.set(enc_msg)
 
     let param_obj = {
-      reenc_sks: reenc_sks, consumer_sk: consumer_sk,
-      emsg_ptr: emsg_ptr, emsg_len: emsg_len, chosen_indices: chosen_indices
+      chosen_indices: chosen_indices,
+      reenc_sks: reenc_sks,
+      consumer_sk: consumer_sk,
+      emsg_ptr: emsg_ptr,
+      emsg_len: emsg_len
     };
 
     let res = lhe_call(lhe._decrypt_v2, param_obj);
     lhe._free(emsg_ptr)
 
     let dataview = new Uint8Array(lhe.wasmMemory.buffer, res.msg_ptr, res.msg_len);
-    res.msg = new Uint8Array(dataview);
+    let msg = new Uint8Array(dataview);
     lhe._free(res.msg_ptr)
 
-    return res.msg;
+    return { msg };
   }
 }
