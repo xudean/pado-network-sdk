@@ -50,7 +50,7 @@ function App() {
       label: 'ethereum'
     }
   ];
-  const [everpayBalance, setEverpayBalance] = useState(null);
+  const [everpayBalance, setEverpayBalance] = useState(0);
   //You should generate a new one keypair for every task
   const keyInfo = userKey;
   //If you don't want to use fixed key, you can generate a new one by Utils.generateKey()
@@ -75,6 +75,15 @@ function App() {
       console.log(symbols);
       setArseedingSymbols(symbols);
     });
+  };
+
+  const getEveryPayBalance = async (address) => {
+    const everpay = await new Everpay();
+    const balance = await everpay.balance({
+      tag: 'ethereum-eth-0x0000000000000000000000000000000000000000',
+      account: address
+    });
+    setEverpayBalance(balance);
   };
 
   useEffect(() => {
@@ -114,7 +123,7 @@ function App() {
     const signer = await provider.getSigner();
     const address = await signer.getAddress();
     console.log(window.ethereum.selectedAddress);
-    setMetamaskAddress(address);
+    await setMetamaskAddress(address);
     console.log(address);
     await initPadoNetworkClient();
     console.log('PadoNetworkClient init ');
@@ -122,6 +131,7 @@ function App() {
     const balance = await padoNetworkClientRef.current.getBalance(address, 'ETH');
     setAmountLocked(balance.locked.toString());
     setAmountFree(balance.free.toString());
+    await getEveryPayBalance(address);
     setIsBalanceCanWithdrawLoading(false);
   };
 
@@ -136,7 +146,6 @@ function App() {
   const initPadoNetworkClient = async () => {
     const wallet = getWallet();
     const padoNetworkClient = new PadoNetworkContractClient(chainName, wallet, storageType);
-    debugger;
     padoNetworkClientRef.current = padoNetworkClient;
   };
 
@@ -335,7 +344,10 @@ function App() {
             Connect Metamask
           </button>
           <br />
-          {metamaskAddress && <a>{metamaskAddress}</a>}
+          {metamaskAddress && <a>{metamaskAddress}</a>} <br />
+          <Spin tip={'Fetching everPay balance...'} size="small" spinning={balanceCanWithdrawLoading}>
+            <a>everPay balance(ETH): {everpayBalance}</a>
+          </Spin>
           {/*<br/>*/}
           {/*{arweaveBalance && <a>AR:{arweaveBalance}</a>}*/}
         </div>

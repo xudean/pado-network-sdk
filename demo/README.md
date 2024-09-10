@@ -170,7 +170,7 @@ const keyInfo = await new Utils().generateKey();
 
 #### Submit task
 
-Here, you need a [dataId](#data_id), which is returned by the Data Provider through the [`uploadData`](upload_data).
+Here, you need a [dataId](#data_id), which is returned by the Data Provider through the [`uploadData`](#upload_data).
 
 ```javascript
 const taskId = await padoNetworkClient.submitTask(TaskType.DATA_SHARING, userDataId, keyInfo.pk)
