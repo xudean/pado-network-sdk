@@ -8,10 +8,6 @@ import { ARSEEDING_SYMBOL_MAPPING_WITH_TAG } from '../config';
 import { SupportedSymbols } from '../types';
 
 const arseedingUrl = 'https://arseed.web3infra.dev';
-const tag =
-  'arweave,ethereum-ar-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,0x4fadc7a98f2dc96510e42dd1a74141eeae0c1543';
-const ethereumTag =
-  'ethereum-eth-0x0000000000000000000000000000000000000000';
 
 enum RuntimeEnv {
   Node = 'node',
@@ -33,7 +29,7 @@ export default class ArseedingStorage extends BaseStorage {
     const wallet = this.wallet;
     let signer;
     let provider;
-    let payTag = ARSEEDING_SYMBOL_MAPPING_WITH_TAG[symbol];
+    const payTag = ARSEEDING_SYMBOL_MAPPING_WITH_TAG[symbol];
     const tag = (payTag as any).tag;
     const chainType = (payTag as any).chainType;
     // This is explorer

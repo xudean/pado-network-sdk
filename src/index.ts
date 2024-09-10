@@ -2,8 +2,9 @@
 
 // export { padonetwork };
 // export * from './padonetwork';
-export { ChainName, CommonObject, EncryptionSchema, PriceInfo, StorageType, TaskType } from './types/index';
-import {EthereumMetamaskConnector,ArweaveArConnectConnector} from './types/connectors';
+import { ChainName, CommonObject, EncryptionSchema, PriceInfo, StorageType, TaskType } from './types';
+export { ChainName, CommonObject, EncryptionSchema, PriceInfo, StorageType, TaskType };
+import {EthereumMetamaskConnector,ArweaveArConnectConnector} from './types';
 export {EthereumMetamaskConnector,ArweaveArConnectConnector};
 import PadoNetworkContractClient from './pado-network-contract-client/index';
 import Utils from './common/utils';

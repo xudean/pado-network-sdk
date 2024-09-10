@@ -1,5 +1,6 @@
 import Arweave from 'arweave';
-import { StorageType, WalletWithType,SupportedSymbols } from '../types/index';
+import {StorageType, WalletWithType, SupportedSymbols, IConnector} from '../types/index';
+import {getWalletFromConnector} from "../common/wallet-helper";
 
 interface IBaseStorage {
   submitData(data: string | Uint8Array | ArrayBuffer, symbol: SupportedSymbols): Promise<string>;
@@ -17,12 +18,14 @@ export default class BaseStorage implements IBaseStorage {
   storageType: StorageType;
   wallet: WalletWithType;
   arweave: Arweave;
+  connector: IConnector;
 
 
-  constructor(storageType: StorageType, wallet: WalletWithType) {
+  constructor(storageType: StorageType, connector: IConnector) {
     this.storageType = storageType;
-    this.wallet = wallet;
+    this.connector = connector;
     this.arweave = Arweave.init(ARConfig);
+    this.wallet = getWalletFromConnector(connector);
   }
 
   async submitData(data: Uint8Array, symbol: SupportedSymbols): Promise<string> {

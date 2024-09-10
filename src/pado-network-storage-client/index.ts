@@ -1,4 +1,4 @@
-import { StorageType, WalletWithType } from '../types/index';
+import {IConnector, StorageType, WalletWithType} from '../types/index';
 import ArseedingStorage from './arseeding-storage';
 import ArweaveStorage from './arweave-storage';
 
@@ -9,10 +9,8 @@ const StorageClient = {
 };
 export default class PadoNetworkStorageClient {
   private _client: any;
-  storageType: StorageType;
-  constructor(storageType: StorageType = StorageType.ARWEAVE, wallet: WalletWithType) {
-    this.storageType = storageType;
-    this._client = new StorageClient[storageType](storageType,wallet);
+  constructor(storageType: StorageType = StorageType.ARWEAVE, connector: IConnector) {
+    this._client = new StorageClient[storageType](storageType,connector);
   }
 
   /**

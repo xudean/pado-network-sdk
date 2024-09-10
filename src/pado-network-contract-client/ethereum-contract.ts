@@ -11,8 +11,7 @@ import {
   type FeeTokenInfo,
   type PriceInfo,
   StorageType,
-  Wallets,
-  TaskType, type Address, Uint256
+  TaskType, type Address, Uint256, IConnector
 } from '../types/index';
 import BaseContract from './base-contract';
 // import { ethers } from 'ethers';
@@ -30,14 +29,14 @@ export default class EthereumContract extends BaseContract {
   fee: any;
   helper: any;
 
-  constructor(chainName: ChainName, storageType: StorageType, wallets: Wallets) {
-    super(chainName, storageType, wallets);
+  constructor(chainName: ChainName, storageType: StorageType, connector: IConnector) {
+    super(chainName, storageType, connector);
     const addresses = PADO_NETWORK_CONTRACT_ADDRESS[chainName];
-    this.worker = new Worker(chainName, wallets.wallet.wallet, (addresses as any).workerMgt);
-    this.data = new Data(chainName, wallets.wallet.wallet, (addresses as any).dataMgt);
-    this.task = new Task(chainName, wallets.wallet.wallet, (addresses as any).taskMgt);
-    this.fee = new Fee(chainName, wallets.wallet.wallet, (addresses as any).feeMgt);
-    this.helper = new Helper(wallets.wallet.wallet);
+    this.worker = new Worker(chainName, this.wallet, (addresses as any).workerMgt);
+    this.data = new Data(chainName, this.wallet, (addresses as any).dataMgt);
+    this.task = new Task(chainName, this.wallet, (addresses as any).taskMgt);
+    this.fee = new Fee(chainName, this.wallet, (addresses as any).feeMgt);
+    this.helper = new Helper(this.wallet);
   }
 
   /**

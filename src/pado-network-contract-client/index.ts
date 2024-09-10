@@ -2,10 +2,9 @@ import {
   Address,
   ChainName,
   CommonObject,
-  EncryptionSchema,
+  EncryptionSchema, IConnector,
   PriceInfo,
   StorageType, TaskType, Uint256,
-  WalletWithType
 } from '../types/index';
 import ArweaveContract from './arweave-contract';
 import EthereumContract from './ethereum-contract';
@@ -20,23 +19,8 @@ export default class PadoNetworkContractClient {
   private _client: any;
   private _storageType: StorageType;
 
-  constructor(chainName: ChainName, wallet: any, storageType: StorageType = StorageType.ARSEEDING) {
-    let walletType = 'arweave';
-    if (chainName === 'holesky' || chainName === 'ethereum') {
-      walletType = 'metamask';
-    }
-    let wallets: any = {};
-    const walletInfo: WalletWithType = {
-      wallet: wallet,
-      walletType: walletType as any
-    };
-    const storageWalletInfo: WalletWithType = {
-      wallet: wallet,
-      walletType: walletType as any
-    };
-    wallets.wallet = walletInfo;
-    wallets.storageWallet = storageWalletInfo;
-    this._client = new ContractClient[chainName](chainName, storageType, wallets);
+  constructor(chainName: ChainName, connector: IConnector, storageType: StorageType = StorageType.ARSEEDING) {
+    this._client = new ContractClient[chainName](chainName, storageType, connector);
     this._storageType = storageType;
   }
 
@@ -62,7 +46,7 @@ export default class PadoNetworkContractClient {
     permissionCheckers: Address[] = [],
     encryptionSchema: EncryptionSchema = DEFAULT_ENCRYPTION_SCHEMA
   ) {
-    const dataId = this._client.uploadData(data, dataTag, priceInfo,permissionCheckers, encryptionSchema);
+    const dataId = await this._client.uploadData(data, dataTag, priceInfo,permissionCheckers, encryptionSchema);
     return dataId;
   }
 

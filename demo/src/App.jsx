@@ -9,6 +9,7 @@ import PadoNetworkContractClient from '../../src/pado-network-contract-client/in
 import { StorageType, TaskType } from '../../src/types/index';
 import { userKey } from './config/config';
 import { getWalletBalance } from './script/arseeding.js';
+import {EthereumMetamaskConnector} from "../../src";
 
 function App() {
   const [cliecked, setCliecked] = useState();
@@ -135,8 +136,9 @@ function App() {
 
   const initPadoNetworkClient = async () => {
     const wallet = getWallet();
-    const padoNetworkClient = new PadoNetworkContractClient(chainName, wallet, storageType);
-    debugger;
+    const metaMaskConnector = new EthereumMetamaskConnector(wallet);
+    debugger
+    const padoNetworkClient = new PadoNetworkContractClient(chainName, metaMaskConnector, storageType);
     padoNetworkClientRef.current = padoNetworkClient;
   };
 
