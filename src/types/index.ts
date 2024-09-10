@@ -181,3 +181,14 @@ export enum TaskType {
   DATA_SHARING = 'dataSharing'
 }
 
+export interface IConnector{
+  getConnectType(): ConnectorType;
+}
+
+export enum ConnectorType{
+  ETHEREUM_METAMASK_CONNECTOR,
+  ETHEREUM_PRIVATE_KEY_CONNECTOR,
+  // ETHEREUM_KEYSTORE_CONNECTOR,
+  ARWEAVE_ARCONNECT_CONNECTOR,
+  ARWEAVE_KEYSTORE_CONNECTOR,
+}
